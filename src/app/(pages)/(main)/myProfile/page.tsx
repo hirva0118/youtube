@@ -147,7 +147,7 @@ const Page = () => {
             {videoList.map((video: any) => (
               <div
                 key={video._id}
-                className="w-full h-full bg-gray-800 text-white rounded-lg shadow-md p-4 relative"
+                className="w-full h-full bg-gray-800 text-white rounded-lg shadow-md p-3 relative"
               >
                 <Link href={`/watchVideo/${video._id}`}>
                   <img
@@ -177,13 +177,13 @@ const Page = () => {
                     </button>
 
                     {menuOpenId === video._id && (
-                      <div className="absolute right-0 mt-1 w-28 bg-slate-200 text-black rounded z-10">
+                      <div className="absolute right-0 mt-1 w-28 bg-slate-700 text-white rounded z-10">
                         <button
                           onClick={() => {
                             handleDelete(video._id);
                             setMenuOpenId(null);
                           }}
-                          className="block w-full px-4 py-1 font-semibold text-sm hover:bg-gray-400 text-left cursor-pointer"
+                          className="block w-full px-4 py-1 font-semibold text-sm hover:bg-gray-600 text-left cursor-pointer"
                         >
                           Delete
                         </button>
@@ -192,7 +192,7 @@ const Page = () => {
                             handlePublishToggle(video._id);
                             setMenuOpenId(null);
                           }}
-                          className="block w-full px-4 py-1 font-semibold text-sm hover:bg-gray-400 text-left cursor-pointer"
+                          className="block w-full px-4 py-1 font-semibold text-sm hover:bg-gray-600 text-left cursor-pointer"
                         >
                           {video.isPublished ? "Archive" : "Publish"}
                         </button>

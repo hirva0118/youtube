@@ -103,15 +103,24 @@ const Page = () => {
             <Link href={`/watchVideo/${video._id}`} key={video._id}>
               <div
                 key={video._id}
-                className="w-full bg-gray-800 text-white rounded-lg  p-4"
+                className="w-full bg-gray-800 text-white rounded-lg  p-3"
               >
                 <img
-                  className="w-full h-full object-cover rounded mb-2"
+                  className="w-full h-full object-cover rounded mb-4"
                   alt="thumbnail"
                   src={video.thumbnail}
                 />
-                <h3 className="font-semibold">{video.title}</h3>
-                <p className="text-sm">{video.description}</p>
+                <div className="flex gap-2 items-center">
+                  <img
+                    className="w-10 h-10 rounded-full"
+                    alt="avatar"
+                    src={video.owner.avatar}
+                  />
+                  <div className="flex flex-col">
+                    <h3 className="font-semibold">{video.title}</h3>
+                    <p className="text-sm text-slate-400">{video.owner.username}</p>
+                  </div>
+                </div>
               </div>
             </Link>
           ))}

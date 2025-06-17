@@ -39,6 +39,41 @@ export async function GET(request: NextRequest) {
     pipeline.push({ $skip: skip });
     pipeline.push({ $limit: limit });
 
+    pipeline.push({
+      $lookup: {
+        from: "users", 
+        localField: "owner", 
+        foreignField: "_id", 
+        as: "ownerDetails", 
+      },
+    });
+
+    pipeline.push({
+      $addFields: {
+        owner: { $arrayElemAt: ["$ownerDetails", 0] }, 
+      },
+    });
+
+    pipeline.push({
+      $project: {
+        title: 1,
+        description: 1,
+        duration: 1,
+        isLiked: 1,
+        isPublished: 1,
+        likeCount: 1,
+        thumbnail: 1,
+        videoFile: 1,
+        views: 1,
+        "owner.username": 1,   
+        "owner.fullName": 1,   
+        "owner.avatar": 1,     
+        "owner._id": 1,        
+        createdAt: 1,
+        updatedAt: 1,
+      },
+    });
+
     const videos = await Video.aggregate(pipeline);
 
     return NextResponse.json(
