@@ -221,7 +221,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
               </button>
             ) : (
               <button
-                className="bg-slate-600 px-4 py-2 ml-4 cursor-pointer hover:bg-slate-700 text-white rounded-3xl"
+                className="bg-slate-600 px-4 py-2 ml-6 cursor-pointer hover:bg-slate-700 text-white rounded-3xl"
                 onClick={handleToggleSubscribe}
               >
                 Subscribe
