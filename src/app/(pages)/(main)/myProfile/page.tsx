@@ -13,7 +13,7 @@ const Page = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [inputText, setInputText] = useState("");
   const [sortBy, setSortBy] = useState("");
-  const [sortType, setSortType] = useState("asc");
+  const [sortType, setSortType] = useState(undefined);
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
 
   const menuRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
@@ -26,7 +26,7 @@ const Page = () => {
         limit: 10,
         query: query || undefined,
         sortBy: sortBy || undefined,
-        sortType: sortType as "desc" | "asc" | undefined,
+        sortType: sortType || undefined,
       });
 
       setVideoList(response?.data || []);
@@ -68,7 +68,7 @@ const Page = () => {
     setMenuOpenId((prevId) => (prevId === id ? null : id));
   };
 
-  // ✅ Close on click outside — per menuRef
+ 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -116,7 +116,7 @@ const Page = () => {
 
           <button
             onClick={handleSearch}
-            className="px-4 py-2 bg-blue-800 text-white rounded-md hover:bg-blue-900"
+            className="px-4 py-2 bg-blue-500 text-white rounded-md cursor-pointer hover:bg-blue-600"
           >
             Apply Filter
           </button>
@@ -133,7 +133,7 @@ const Page = () => {
           />
           <button
             onClick={handleSearch}
-            className="px-4 py-2 bg-blue-800 text-white rounded-md hover:bg-blue-900"
+            className="px-4 py-2 bg-blue-500 text-white rounded-md cursor-pointer hover:bg-blue-600"
           >
             Search
           </button>

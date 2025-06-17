@@ -5,11 +5,13 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { username: string } }
+  { params }: { params: Promise<{ username: string }> }
 ) {
   try {
     await connectToDatabase();
-    const username = params.username;
+    const {username} = await params;
+    
+    // const username = await params.username;
     if (!username?.trim()) {
       return NextResponse.json(
         { error: "Username is required!" },
@@ -55,7 +57,20 @@ export async function GET(
           isSubscribed: {
             $cond: {
               if: {
-                $in: [loggedInUser._id, "$subscribers.subscriber"],
+                $gt: [
+                  {
+                    $size: {
+                      $filter: {
+                        input: "$subscribers",
+                        as: "subscriber",
+                        cond: {
+                          $eq: ["$$subscriber.subscriber", loggedInUser._id],
+                        },
+                      },
+                    },
+                  },
+                  0,
+                ],
               },
               then: true,
               else: false,
@@ -82,11 +97,14 @@ export async function GET(
     }
 
     return NextResponse.json(
-      { success: true, message: "User channel fetched successfully",data: channel[0] },
+      {
+        success: true,
+        message: "User channel fetched successfully",
+        data: channel[0],
+      },
 
       { status: 200 }
     );
-
   } catch (error: any) {
     console.log(error);
     return NextResponse.json(

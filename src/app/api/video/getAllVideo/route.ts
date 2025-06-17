@@ -14,11 +14,10 @@ export async function GET(request: NextRequest) {
 
   const pipeline: any[] = [];
   try {
-    const matchStage = {isPublished:true}
 
     if (query) {
       pipeline.push({
-        $matchStage: {
+        $match: {
           $or: [
             { title: { $regex: query, $options: "i" } },
             { description: { $regex: query, $options: "i" } },
@@ -27,7 +26,6 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    pipeline.push({ $match: matchStage });
 
     if (sortBy) {
       pipeline.push({

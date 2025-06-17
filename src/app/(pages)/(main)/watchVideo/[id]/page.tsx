@@ -12,6 +12,10 @@ import { getCurrentUser } from "@/app/actions/userActions";
 import { BiLike, BiSolidLike } from "react-icons/bi";
 import { IoSend } from "react-icons/io5";
 import { AiFillLike, AiOutlineLike } from "react-icons/ai";
+import {
+  getUserChannel,
+  toggleSubscription,
+} from "@/app/actions/subscribeAction";
 
 interface CommentType {
   _id: string;
@@ -22,12 +26,11 @@ interface CommentType {
     avatar: string;
     fullName: string;
     username: string;
-    _id:string;
+    _id: string;
   };
 }
-interface currentUserProp{
-  _id:string;
-
+interface currentUserProp {
+  _id: string;
 }
 
 const Page = ({ params }: { params: Promise<{ id: string }> }) => {
@@ -36,7 +39,9 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
   const [comment, setComment] = useState<CommentType[]>([]);
   const [newComment, setNewComment] = useState("");
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
-  const [currentUser, setCurrentUser] = useState<currentUserProp|null>(null);
+  const [currentUser, setCurrentUser] = useState<currentUserProp | null>(null);
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [subscribersCount, setSubscribersCount] = useState(0);
 
   useEffect(() => {
     const fetchVideo = async () => {
@@ -51,6 +56,29 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
 
         const result = await getVideoById(videoId);
         setVideo(result?.data || null);
+        console.log(video, "videooooo");
+        console.log(result, "result");
+
+        if (result?.data?.owner?.username) {
+          const res = await getUserChannel(result.data.owner.username);
+          console.log("Response from getUserChannel:", res);
+
+          if (res?.success) {
+            setIsSubscribed(res.data?.isSubscribed);
+          } else {
+            console.log(
+              "Error fetching channel:",
+              res?.error || "Unknown error"
+            );
+            setIsSubscribed(false); // Handle error case
+          }
+
+          setSubscribersCount(res.data.subscribersCount)
+        } else {
+          console.error("Video owner username is missing!");
+          setIsSubscribed(false);
+        }
+        
       } catch (err) {
         console.error("Failed to fetch video:", err);
       } finally {
@@ -66,6 +94,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
       console.log("comment", comment);
     };
 
+   
     fetchVideo();
     fetchAllComments();
   }, []);
@@ -120,7 +149,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
   const handleLikeDislikeComment = async (commentId: string) => {
     try {
       const result = await likeDislikeComment(commentId);
-      console.log(result.data)
+      console.log(result.data);
       if (result.success) {
         const { id } = await params;
         const videoId = id;
@@ -131,6 +160,24 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
       }
 
       // Update the comment list with the updated comment
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleToggleSubscribe = async () => {
+    try {
+      const result = await toggleSubscription(video.owner._id);
+      // setIsSubscribed(!isSubscribed);
+      const res = await getUserChannel(video.owner.username);
+      if (res.success) {
+        setIsSubscribed(res.data.isSubscribed);
+      } else {
+        setIsSubscribed(res.data.isSubscribed);
+      }
+      setSubscribersCount(res.data.subscribersCount);
+
+      return result.data;
     } catch (error) {
       console.log(error);
     }
@@ -161,7 +208,25 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
               alt="profile"
               src={video.owner.avatar}
             />
-            <h1 className="text-lg font-semibold">{video.owner.fullName}</h1>
+            <div>
+              <h1 className="text-lg font-semibold">{video.owner.fullName}</h1>
+              <p className="text-sm text-gray-300">{subscribersCount} subscribers</p>
+            </div>
+            {isSubscribed ? (
+              <button
+                className="bg-slate-600 px-4 py-2 ml-6 cursor-pointer hover:bg-slate-700 text-white rounded-3xl"
+                onClick={handleToggleSubscribe}
+              >
+                Unsubscribe
+              </button>
+            ) : (
+              <button
+                className="bg-slate-600 px-4 py-2 ml-4 cursor-pointer hover:bg-slate-700 text-white rounded-3xl"
+                onClick={handleToggleSubscribe}
+              >
+                Subscribe
+              </button>
+            )}
           </div>
           <div>
             {video.isLiked ? (
