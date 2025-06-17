@@ -22,6 +22,12 @@ export async function GET(
       throw new Error("Video not found");
     }
 
+    const user = await getUserFromRequest();
+    if (!user) {
+      throw new Error("Unauthorized");
+    }
+    // console.log(user, "userrrr");
+
     const comments = await Comment.aggregate([
       {
         $match: {
@@ -40,6 +46,7 @@ export async function GET(
                 username: 1,
                 fullName: 1,
                 avatar: 1,
+                _id:1
               },
             },
           ],
@@ -60,14 +67,30 @@ export async function GET(
           as: "likes",
         },
       },
+      {
+        $addFields:{
+          likeCount:{$size: "$likes"},
+        },
+      },
+      {
+        $addFields:{
+          isLiked:{
+            $in:[user._id,"$likes.likedBy"],
+          }
+        }
+      }
     ]);
+
     if (!comments) {
       throw new Error("Failed to get comments");
     }
 
-
     return NextResponse.json(
-      { success: true, message: "comments fetched successfully", comments },
+      {
+        success: true,
+        message: "comments fetched successfully",
+        comments,
+      },
       { status: 200 }
     );
   } catch (error) {
@@ -122,25 +145,33 @@ export async function POST(
   }
 }
 
-export async function DELETE(request:NextRequest, {params}:{params: Promise<{id:string}>}) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     await connectToDatabase();
-    const {id} = await params;
+    const { id } = await params;
     const commentId = id;
-    
-    if(!commentId.trim()){
-      throw new Error("commentId not provided")
+
+    if (!commentId.trim()) {
+      throw new Error("commentId not provided");
     }
 
     const deleteComment = await Comment.findByIdAndDelete(commentId);
-    if(!deleteComment){
+    if (!deleteComment) {
       throw new Error("Failed to delete comment");
     }
 
-    return NextResponse.json({success:true,message:"Comment deleted successfully",deleteComment},{status:200})
-
+    return NextResponse.json(
+      { success: true, message: "Comment deleted successfully", deleteComment },
+      { status: 200 }
+    );
   } catch (error) {
-    console.log(error)
-    return NextResponse.json({success:false,message:"Something went wrong"},{status:500})
+    console.log(error);
+    return NextResponse.json(
+      { success: false, message: "Something went wrong" },
+      { status: 500 }
+    );
   }
 }

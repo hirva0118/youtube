@@ -6,18 +6,37 @@ import {
   addComment,
   deleteComment,
   getComment,
+  likeDislikeComment,
 } from "@/app/actions/commentAction";
 import { getCurrentUser } from "@/app/actions/userActions";
 import { BiLike, BiSolidLike } from "react-icons/bi";
 import { IoSend } from "react-icons/io5";
+import { AiFillLike, AiOutlineLike } from "react-icons/ai";
+
+interface CommentType {
+  _id: string;
+  content: string;
+  isLiked: boolean;
+  likeCount: number;
+  owner: {
+    avatar: string;
+    fullName: string;
+    username: string;
+    _id:string;
+  };
+}
+interface currentUserProp{
+  _id:string;
+
+}
 
 const Page = ({ params }: { params: Promise<{ id: string }> }) => {
   const [video, setVideo] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [comment, setComment] = useState([]);
+  const [comment, setComment] = useState<CommentType[]>([]);
   const [newComment, setNewComment] = useState("");
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
-  const [currentUser, setCurrentUser] = useState("");
+  const [currentUser, setCurrentUser] = useState<currentUserProp|null>(null);
 
   useEffect(() => {
     const fetchVideo = async () => {
@@ -38,7 +57,6 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
         setLoading(false);
       }
     };
-
     const fetchAllComments = async () => {
       const { id } = await params;
       const videoId = id;
@@ -99,6 +117,25 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
     }
   };
 
+  const handleLikeDislikeComment = async (commentId: string) => {
+    try {
+      const result = await likeDislikeComment(commentId);
+      console.log(result.data)
+      if (result.success) {
+        const { id } = await params;
+        const videoId = id;
+        const updatedComment = await getComment(videoId);
+        if (updatedComment.success) {
+          setComment(updatedComment.comments);
+        }
+      }
+
+      // Update the comment list with the updated comment
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const toggleMenu = (id: string) => {
     setMenuOpenId((prevId) => (prevId === id ? null : id));
   };
@@ -129,24 +166,18 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
           <div>
             {video.isLiked ? (
               <div className="flex items-center gap-2 pb-3 ">
-                {/* <img
-                  alt="liked"
-                  className="w-8 h-8 cursor-pointer"
-                  src="https://t3.ftcdn.net/jpg/05/10/38/16/360_F_510381696_jhNwqjLI2W2KDDQVyrEtY9Cucq3ahZhg.jpg"
+                <BiSolidLike
+                  className="w-7 h-7 cursor-pointer"
                   onClick={handleLikeDislikeVideo}
-                /> */}
-                <BiSolidLike className="w-7 h-7 cursor-pointer" onClick={handleLikeDislikeVideo} />
+                />
                 <span>{video.likeCount}</span>
               </div>
             ) : (
               <div className="flex items-center gap-2 pb-3">
-                {/* <img
-                  alt="disliked"
-                  className="w-8 h-8 cursor-pointer"
-                  src="https://media.istockphoto.com/id/1136351242/vector/like-social-media-hand-line-icon-editable-stroke-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=OnKkq5JCHkLvZ1Ck_njtTQMCyLljXsXGNhGqVpwwVUA="
+                <BiLike
+                  className="w-7 h-7 cursor-pointer"
                   onClick={handleLikeDislikeVideo}
-                /> */}
-                <BiLike className="w-7 h-7 cursor-pointer" onClick={handleLikeDislikeVideo} />
+                />
                 <span>{video.likeCount}</span>
               </div>
             )}
@@ -167,13 +198,11 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
               placeholder="Write a comment..."
               className=" w-full p-2 bg-gray-800 text-white border-b border-gray-600 outline-none"
             />
-            {/* <button
+
+            <IoSend
+              className="w-8 h-8 cursor-pointer"
               onClick={handlePostComment}
-              className=" bg-slate-600 px-4 py-2 rounded-md cursor-pointer hover:bg-slate-700"
-            >
-              Comment
-            </button> */}
-            <IoSend className="w-8 h-8 cursor-pointer" onClick={handlePostComment} />
+            />
           </div>
           <div className="space-y-4">
             {comment && comment.length > 0 ? (
@@ -184,15 +213,34 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
                       <img
                         className="w-10 h-10 rounded-full"
                         alt="name"
-                        src={cmt.owner.avatar}
+                        src={cmt?.owner?.avatar}
                       />
                     </div>
                     <div className="flex flex-col">
-                      <p>{cmt.owner.fullName}</p>
-                      <p className=" text-gray-300">{cmt.content}</p>
+                      <p>{cmt?.owner?.fullName}</p>
+                      <p className=" text-gray-300">{cmt?.content}</p>
+                      <div>
+                        {cmt?.isLiked ? (
+                          <div className="flex gap-2">
+                            <AiFillLike
+                              onClick={() => handleLikeDislikeComment(cmt._id)}
+                              className="w-5 h-5"
+                            />
+                            <p>{cmt.likeCount}</p>
+                          </div>
+                        ) : (
+                          <div className="flex gap-2">
+                            <AiOutlineLike
+                              onClick={() => handleLikeDislikeComment(cmt._id)}
+                              className="w-5 h-5"
+                            />
+                            <p>{cmt.likeCount}</p>
+                          </div>
+                        )}
+                      </div>
                     </div>
                     <div className="relative">
-                      {currentUser && currentUser._id === cmt.owner._id && (
+                      {currentUser && currentUser._id === cmt?.owner?._id && (
                         <button
                           onClick={() => toggleMenu(cmt._id)}
                           className="text-white px-2 text-lg cursor-pointer"

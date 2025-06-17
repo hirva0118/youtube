@@ -29,3 +29,13 @@ export const deleteComment = async(id:string) => {
         return new Error("Internal server error")
     }
 }
+
+export const likeDislikeComment = async(id:string) => {
+    try {
+        const response = await axios.post(`/api/like/likeComment/${id}`)
+        return response.data;
+    } catch (error) {
+        console.log(error)
+        return new Error("Internal server error");
+    }
+}
