@@ -55,11 +55,15 @@ export async function GET() {
       },
     ]);
 
+    if(!user){
+      throw new Error("User not found")
+    }
+
     return NextResponse.json(
       {
         success: true,
         message: "Watch History fetched successfully",
-        data: user[0].watchHistory,
+        data: user,
       },
       { status: 200 }
     );
