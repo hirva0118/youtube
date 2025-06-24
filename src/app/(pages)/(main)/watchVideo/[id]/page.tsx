@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getVideoById, likeDislikeVideo } from "@/app/actions/videoAction";
+import { addToWatchHistory, getVideoById, likeDislikeVideo } from "@/app/actions/videoAction";
 import {
   addComment,
   deleteComment,
@@ -56,8 +56,6 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
 
         const result = await getVideoById(videoId);
         setVideo(result?.data || null);
-        console.log(video, "videooooo");
-        console.log(result, "result");
 
         if (result?.data?.owner?.username) {
           const res = await getUserChannel(result.data.owner.username);
@@ -94,7 +92,14 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
       console.log("comment", comment);
     };
 
-   
+    const addVideoToWatchHistory = async() => {
+      const {id} = await params;
+      const videoId =id;
+      const res = await addToWatchHistory(videoId);
+      console.log(res)
+    }
+
+    addVideoToWatchHistory();
     fetchVideo();
     fetchAllComments();
   }, []);
@@ -197,7 +202,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
 
   return (
     <div className="bg-gray-900 min-h-screen px-4 py-8 text-white">
-      <div className="max-w-4xl mx-auto bg-gray-800 rounded-xl  p-6 ">
+      <div className="max-w-4xl mx-auto bg-gray-800 rounded-xl p-6 ">
         <video className="w-full rounded-lg" controls src={video.videoFile} />
         <h1 className="text-2xl font-semibold mb-3 mt-2">{video.title}</h1>
 
@@ -289,7 +294,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
                           <div className="flex gap-2">
                             <AiFillLike
                               onClick={() => handleLikeDislikeComment(cmt._id)}
-                              className="w-5 h-5"
+                              className="w-5 h-5 cursor-pointer"
                             />
                             <p>{cmt.likeCount}</p>
                           </div>
@@ -297,7 +302,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
                           <div className="flex gap-2">
                             <AiOutlineLike
                               onClick={() => handleLikeDislikeComment(cmt._id)}
-                              className="w-5 h-5"
+                              className="w-5 h-5 cursor-pointer"
                             />
                             <p>{cmt.likeCount}</p>
                           </div>

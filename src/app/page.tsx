@@ -98,7 +98,7 @@ const Page = () => {
       {loading ? (
         <p className="text-gray-500">Loading videos...</p>
       ) : videoList.length > 0 ? (
-        <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 p-3 gap-4 pt-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-3 gap-4 pt-5">
           {videoList.map((video: any) => (
             <Link href={`/watchVideo/${video._id}`} key={video._id}>
               <div
@@ -106,7 +106,7 @@ const Page = () => {
                 className="w-full bg-gray-800 text-white rounded-lg  p-3"
               >
                 <img
-                  className="w-full h-full object-cover rounded mb-4"
+                  className="w-full h-48 rounded mb-4"
                   alt="thumbnail"
                   src={video.thumbnail}
                 />
@@ -118,7 +118,7 @@ const Page = () => {
                   />
                   <div className="flex flex-col">
                     <h3 className="font-semibold">{video.title}</h3>
-                    <p className="text-sm text-slate-400">{video.owner.username}</p>
+                    <p className="text-sm text-slate-400">{video.owner.fullName}</p>
                   </div>
                 </div>
               </div>

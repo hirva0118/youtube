@@ -1,4 +1,5 @@
 "use client";
+import { getCurrentUser } from "@/app/actions/userActions";
 import {
   deleteVideo,
   getVideo,
@@ -6,6 +7,14 @@ import {
 } from "@/app/actions/videoAction";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+
+interface currentUserType {
+  user: {
+    coverImage: string;
+    avatar: string;
+    fullName: string;
+  };
+}
 
 const Page = () => {
   const [videoList, setVideoList] = useState([]);
@@ -15,6 +24,7 @@ const Page = () => {
   const [sortBy, setSortBy] = useState("");
   const [sortType, setSortType] = useState(undefined);
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<currentUserType | null>(null);
 
   const menuRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
@@ -37,8 +47,19 @@ const Page = () => {
     }
   };
 
+  const getCurrentUserData = async () => {
+    try {
+      const res = await getCurrentUser();
+      console.log(res);
+      setCurrentUser(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     fetchVideos();
+    getCurrentUserData();
   }, []);
 
   const handleSearch = () => {
@@ -68,7 +89,6 @@ const Page = () => {
     setMenuOpenId((prevId) => (prevId === id ? null : id));
   };
 
- 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -84,11 +104,29 @@ const Page = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [menuOpenId]);
 
+  console.log(currentUser, "sdsdsdsdsdsdsd");
+
   return (
     <div className="min-h-screen h-full bg-black">
       <div className=" max-w-full mx-auto p-3 sm:p-6 rounded-lg shadow-md">
+        <div className="relative pb-4">
+          <img
+            className=" h-52 w-full"
+            alt="coverImage"
+            src={currentUser?.user?.coverImage}
+          />
+          <div className="flex flex-col gap-2 items-center absolute bottom-4 right-1/2 transform translate-x-1/2 translate-y-1/2">
+            <img
+              className=" h-40 w-40 rounded-full"
+              alt="avatar"
+              src={currentUser?.user?.avatar}
+            />
+            <p className="text-xl">{currentUser?.user.fullName}</p>
+          </div>
+        </div>
         {/* Filters and Search */}
-        <h2 className="text-xl font-semibold mb-4">My Uploaded Videos</h2>
+        <br />
+        <h2 className="text-xl font-semibold mb-4 mt-20">My Uploaded Videos</h2>
 
         {/* Sort and filter section */}
         <div className="flex flex-col gap-2 sm:flex-row justify-end mb-10">
@@ -143,7 +181,7 @@ const Page = () => {
         {loading ? (
           <p className="text-gray-500">Loading videos...</p>
         ) : videoList.length > 0 ? (
-          <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 p-3 gap-4 pt-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-3 gap-4 pt-5">
             {videoList.map((video: any) => (
               <div
                 key={video._id}

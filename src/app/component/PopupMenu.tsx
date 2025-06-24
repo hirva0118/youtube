@@ -54,6 +54,17 @@ const PopupMenu = () => {
                 Post Video
               </Link>
             </li>
+
+            <li className="hover:bg-slate-600">
+              <Link
+                className="pl-2 text-sm cursor-pointer"
+                href="/watchHistory"
+                onClick={handleNavigation}
+              >
+                Watch History
+              </Link>
+            </li>
+
             <li className="hover:bg-slate-600 ">
               <button
                 className="cursor-pointer pl-2 hover:bg-slate-600 rounded-lg w-full text-left"

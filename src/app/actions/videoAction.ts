@@ -98,4 +98,22 @@ export const publishToggleVideo = async (id:string) =>{
     return new Error("Internal server error");
   }
 }
+export const addToWatchHistory = async(id:string) => {
+  try {
+    const response = await axios.post(`/api/video/watchHistory/${id}`);
+    return response.data;
+  } catch (error) {
+    console.log(error)
+    return new Error("Internal server error");
+  }
+}
 
+export const getFromWatchHistory = async() =>{
+  try {
+    const response = await axios.get("api/users/getWatchHistory")
+    return response.data;
+  } catch (error) {
+    console.log(error)
+    return new Error("Internal server error")
+  }
+}
