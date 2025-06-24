@@ -103,7 +103,7 @@ const Page = () => {
             <Link href={`/watchVideo/${video._id}`} key={video._id}>
               <div
                 key={video._id}
-                className="w-full bg-gray-800 text-white rounded-lg  p-3"
+                className="w-full h-full bg-gray-800 text-white rounded-lg  p-3"
               >
                 <img
                   className="w-full h-48 rounded mb-4"

@@ -92,6 +92,7 @@ const Page = () => {
             maxFileSize: 5000000,
             maxImageFileSize: 5000000,
             clientAllowedFormats: ["jpg", "jpeg", "png"],
+            
           }}
         >
           {({ open }) => (

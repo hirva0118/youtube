@@ -104,7 +104,6 @@ const Page = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [menuOpenId]);
 
-  console.log(currentUser, "sdsdsdsdsdsdsd");
 
   return (
     <div className="min-h-screen h-full bg-black">
@@ -117,7 +116,7 @@ const Page = () => {
           />
           <div className="flex flex-col gap-2 items-center absolute bottom-4 right-1/2 transform translate-x-1/2 translate-y-1/2">
             <img
-              className=" h-40 w-40 rounded-full"
+              className="border border-5 border-black h-32 w-32 sm:h-44 sm:w-44 rounded-full"
               alt="avatar"
               src={currentUser?.user?.avatar}
             />
@@ -126,10 +125,9 @@ const Page = () => {
         </div>
         {/* Filters and Search */}
         <br />
-        <h2 className="text-xl font-semibold mb-4 mt-20">My Uploaded Videos</h2>
 
         {/* Sort and filter section */}
-        <div className="flex flex-col gap-2 sm:flex-row justify-end mb-10">
+        <div className=" mt-24 flex flex-col gap-2 sm:flex-row justify-end mb-10">
           <select
             title="sortBy"
             value={sortBy}

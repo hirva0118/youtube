@@ -128,11 +128,11 @@ const PublishVideo = () => {
               onSuccess={handleVideoUpload}
               options={{
                 resourceType: "video",
-                cropping: true,
+                cropping: false,
                 croppingAspectRatio: 1,
-                maxFileSize: 5000000,
-                maxImageFileSize: 5000000,
+                maxFileSize: 50 * 1024 * 1024,
                 clientAllowedFormats: ["mp4"],
+                maxChunkSize: 40 * 1024 * 1024,
               }}
             >
               {({ open }) => (
@@ -153,9 +153,10 @@ const PublishVideo = () => {
               options={{
                 cropping: true,
                 croppingAspectRatio: 1,
-                maxFileSize: 5000000,
-                maxImageFileSize: 5000000,
+                maxFileSize: 50 * 1024 * 1024,
+                maxImageFileSize: 50 * 1024 * 1024,
                 clientAllowedFormats: ["jpg", "jpeg", "png"],
+                maxChunkSize: 20 * 1024 * 1024, 
               }}
             >
               {({ open }) => (

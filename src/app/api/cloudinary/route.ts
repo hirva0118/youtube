@@ -9,24 +9,6 @@ v2.config({
 });
 
 
-// const uploadOnCloudinary = async(localFilePath:any) =>{
-//     try {
-//         if(!localFilePath) return null;
-//         const response = await v2.uploader.upload(localFilePath,{
-//             resource_type:"auto"
-//         })
-//         console.log("File uploaded",response.url)
-//         return response.data;
-//     } catch (error) {
-//         console.log(error)
-//         fs.unlinkSync(localFilePath)  //Remove file from local server
-//         return null;
-//     }
-// }
-
-// export default uploadOnCloudinary;
-
-
 export async function POST(request: Request) {
 
   const body = await request.json();
