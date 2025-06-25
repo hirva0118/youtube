@@ -24,7 +24,9 @@
     "next-cloudinary": "^6.16.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-icons": "^5.5.0"
+    "react-icons": "^5.5.0",
+    "react-toastify": "^11.0.5",
+    "toastify": "^2.0.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

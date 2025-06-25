@@ -3,10 +3,13 @@
 import { signin } from "@/app/actions/userActions";
 import Link from "next/link";
 import React, { useState } from "react";
+import { toast } from "react-toastify";
+
 
 const Page = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false)
 
   const handleLogin = async () => {
     const payload = {
@@ -14,17 +17,22 @@ const Page = () => {
       password,
     };
     try {
+      setLoading(true)
       const result = await signin(payload);
       if (result.success) {
-        alert(result.message);
         setEmail("");
         setPassword("");
+        toast.success("Logged in successfully");
         window.location.href = "/";
       } else {
         alert(result.message);
       }
-    } catch (error) {
+    } catch (error:any) {
       console.log(error);
+      toast.error(error);
+
+    }finally{
+      setLoading(false)
     }
   };
 
@@ -52,12 +60,18 @@ const Page = () => {
 
         <button
           onClick={handleLogin}
-          className="bg-blue-500 text-white w-full py-2 rounded cursor-pointer"
+          className="bg-blue-500 text-white w-full py-2 rounded cursor-pointer relative"
         >
+          {loading && (
+            <div className="absolute right-3 sm:right-40 top-1/2 transform -translate-y-1/2">
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          )}
           Login
         </button>
-        <div className="flex justify-end mt-4 cursor-pointer text-blue-300 text-sm">
+        <div className="flex justify-between  mt-4 cursor-pointer text-blue-300 text-sm">
           <Link href="/signup">Create an account</Link>
+          <Link href="/changePassword">Change password</Link>
         </div>
       </div>
     </div>

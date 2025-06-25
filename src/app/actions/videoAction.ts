@@ -117,3 +117,13 @@ export const getFromWatchHistory = async() =>{
     return new Error("Internal server error")
   }
 }
+
+export const deleteFromWatchHistory = async (id:string) => {
+  try {
+    const response = await axios.delete(`/api/video/watchHistory/${id}`);
+    return response.data
+  } catch (error) {
+    console.log(error)
+    return new Error("Internal server error")
+  }
+}

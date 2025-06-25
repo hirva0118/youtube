@@ -190,14 +190,25 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
 
   const toggleMenu = (id: string) => {
     setMenuOpenId((prevId) => (prevId === id ? null : id));
-  };
+  };  
+
+  
+
+  // if (!video) {
+  //   return <p className="text-red-500 p-6 pt-10">Video not found</p>;
+  // }
 
   if (loading) {
-    return <p className="text-white p-6">Loading...</p>;
-  }
-
-  if (!video) {
-    return <p className="text-red-500 p-6">Video not found</p>;
+    return (
+      <div className="pt-32">
+        <div className=" flex justify-center items-center p-10">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+            <p className="mt-2">Loading Page...</p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (

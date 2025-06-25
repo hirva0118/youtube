@@ -12,8 +12,11 @@ const Page = () => {
   const [email, setEmail] = useState("");
   const [avatar, setAvatar] = useState<string>("");
   const [coverImage, setCoverImage] = useState<string>("");
+  const [loading, setLoading] = useState(false);
 
   const handleSignup = async () => {
+    setLoading(true)
+    
     const payload = {
       username,
       fullName,
@@ -34,6 +37,7 @@ const Page = () => {
       setEmail("");
       setAvatar("");
       setCoverImage("");
+      setLoading(false)
       window.location.href = "/signin";
     } else {
       alert(result.message);
@@ -92,7 +96,6 @@ const Page = () => {
             maxFileSize: 5000000,
             maxImageFileSize: 5000000,
             clientAllowedFormats: ["jpg", "jpeg", "png"],
-            
           }}
         >
           {({ open }) => (
@@ -148,8 +151,13 @@ const Page = () => {
 
         <button
           onClick={handleSignup}
-          className="bg-blue-500 text-white w-full py-2 rounded cursor-pointer"
+          className="bg-blue-500 text-white w-full py-2 rounded cursor-pointer relative"
         >
+          {loading && (
+            <div className="absolute right-3 sm:right-36 top-1/2 transform -translate-y-1/2">
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          )}
           Register
         </button>
         <div className="flex justify-end mt-4 cursor-pointer text-blue-300 text-sm ">

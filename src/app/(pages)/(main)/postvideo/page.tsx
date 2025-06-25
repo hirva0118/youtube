@@ -59,7 +59,7 @@ const PublishVideo = () => {
   };
 
   return (
-    <div className="bg-black min-h-screen h-full">
+    <div className="bg-black min-h-screen h-full mt-10">
       <div className="max-w-2xl mx-auto p-6 bg-gray-300 rounded-lg shadow-lg">
         <h2 className="text-2xl text-black font-semibold text-center mb-6">
           Publish Your Video

@@ -66,14 +66,7 @@ const PopupMenu = () => {
             </li>
 
             <li className="hover:bg-slate-600 ">
-              <button
-                className="cursor-pointer pl-2 hover:bg-slate-600 rounded-lg w-full text-left"
-                onClick={() => {
-                  <LogoutButton />;
-                }}
-              >
-                Logout
-              </button>
+              <LogoutButton/>
             </li>
           </ul>
         </div>

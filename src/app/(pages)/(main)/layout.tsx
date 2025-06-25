@@ -1,7 +1,7 @@
-
 import type { Metadata } from "next";
 // import { Geist, Geist_Mono } from "next/font/google";
 import LogoutButton from "@/app/component/LogoutButton";
+import { ToastContainer } from "react-toastify";
 // import { redirect } from "next/navigation";
 
 // const geistSans = Geist({
@@ -28,6 +28,7 @@ export default function RootLayout({
     <>
       <div>
         <LogoutButton />
+        <ToastContainer position="top-right" autoClose={3000} closeOnClick />
       </div>
       {children}
     </>

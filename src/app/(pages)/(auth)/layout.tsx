@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ToastContainer } from "react-toastify";
 // import { Geist, Geist_Mono } from "next/font/google";
 // import LogoutButton from "@/app/component/LogoutButton";
 
@@ -25,6 +26,7 @@ export default function RootLayout({
   return (
     <>
       {children}
+      <ToastContainer position="top-right" autoClose={3000} closeOnClick />
     </>
   );
 }

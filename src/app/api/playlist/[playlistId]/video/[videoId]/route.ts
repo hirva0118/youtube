@@ -29,7 +29,7 @@ export async function POST(
 
     const user = await getUserFromRequest();
 
-    if (!(playlist.owner.toString() === user._id.toString())) {
+    if (!(playlist.owner?.toString() === user._id?.toString())) {
       throw new Error("User has to login to add video to playlist");
     }
 

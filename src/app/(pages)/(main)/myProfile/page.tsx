@@ -1,4 +1,5 @@
 "use client";
+import { getUserChannel } from "@/app/actions/subscribeAction";
 import { getCurrentUser } from "@/app/actions/userActions";
 import {
   deleteVideo,
@@ -16,6 +17,10 @@ interface currentUserType {
   };
 }
 
+interface subscribeType {
+  subscribersCount:number;
+}
+
 const Page = () => {
   const [videoList, setVideoList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,6 +30,8 @@ const Page = () => {
   const [sortType, setSortType] = useState(undefined);
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<currentUserType | null>(null);
+  const [subscribeData, setSubscribeData] = useState<subscribeType | null>(null);
+  
 
   const menuRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
@@ -52,10 +59,17 @@ const Page = () => {
       const res = await getCurrentUser();
       console.log(res);
       setCurrentUser(res);
+
+      const response = await getUserChannel(res?.user?.username)
+      console.log(response,"response")
+      setSubscribeData(response.data);
+      
+
     } catch (error) {
       console.log(error);
     }
   };
+  
 
   useEffect(() => {
     fetchVideos();
@@ -104,23 +118,37 @@ const Page = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [menuOpenId]);
 
+  if (loading) {
+    return (
+      <div className="pt-32">
+        <div className=" flex justify-center items-center p-10">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
+            <p className="mt-2">Loading Page...</p>
+          </div>
+          
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen h-full bg-black">
       <div className=" max-w-full mx-auto p-3 sm:p-6 rounded-lg shadow-md">
-        <div className="relative pb-4">
+        <div className="flex relative pb-4 justify-center items-center">
           <img
-            className=" h-52 w-full"
+            className=" h-64 w-4xl"
             alt="coverImage"
             src={currentUser?.user?.coverImage}
           />
           <div className="flex flex-col gap-2 items-center absolute bottom-4 right-1/2 transform translate-x-1/2 translate-y-1/2">
             <img
-              className="border border-5 border-black h-32 w-32 sm:h-44 sm:w-44 rounded-full"
+              className="border border-2 border-black h-32 w-32 sm:h-44 sm:w-44 rounded-full"
               alt="avatar"
               src={currentUser?.user?.avatar}
             />
             <p className="text-xl">{currentUser?.user.fullName}</p>
+            <p>{subscribeData?.subscribersCount} Subscribers</p>
           </div>
         </div>
         {/* Filters and Search */}
@@ -177,7 +205,7 @@ const Page = () => {
 
         {/* Video Cards */}
         {loading ? (
-          <p className="text-gray-500">Loading videos...</p>
+          <p className="text-gray-500"></p>
         ) : videoList.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-3 gap-4 pt-5">
             {videoList.map((video: any) => (
