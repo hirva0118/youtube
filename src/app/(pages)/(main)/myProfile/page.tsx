@@ -135,9 +135,9 @@ const Page = () => {
   return (
     <div className="min-h-screen h-full bg-black">
       <div className=" max-w-full mx-auto p-3 sm:p-6 rounded-lg shadow-md">
-        <div className="flex relative pb-4 justify-center items-center">
+        <div className="flex relative pb-4 justify-center items-center pt-8">
           <img
-            className=" h-64 w-4xl"
+            className=" h-64 w-4xl border border-2 border-slate-500 p-1"
             alt="coverImage"
             src={currentUser?.user?.coverImage}
           />
@@ -160,7 +160,7 @@ const Page = () => {
             title="sortBy"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="cursor-pointer py-2 sm:mr-2 border border-gray-300 rounded-md text-white bg-black"
+            className="cursor-pointer py-2 sm:mr-2 border border-gray-600 rounded-md text-white bg-black"
           >
             <option value="">Sort by</option>
             <option value="createdAt">Date Created</option>
@@ -172,7 +172,7 @@ const Page = () => {
             title="sortType"
             value={sortType}
             onChange={(e) => setSortType(e.target.value)}
-            className="cursor-pointer py-2 sm:mr-2 border border-gray-300 rounded-md text-white bg-black"
+            className="cursor-pointer py-2 sm:mr-2 border border-gray-600 rounded-md text-white bg-black"
           >
             <option value="asc">Ascending</option>
             <option value="desc">Descending</option>
@@ -180,7 +180,7 @@ const Page = () => {
 
           <button
             onClick={handleSearch}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md cursor-pointer hover:bg-blue-600"
+            className="px-4 py-2 border border-gray-400  text-white rounded-md cursor-pointer hover:bg-blue-500"
           >
             Apply Filter
           </button>
@@ -193,11 +193,11 @@ const Page = () => {
             placeholder="Search videos..."
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            className="flex-1 px-4 py-2 max-w-[60%] sm:max-w-md border border-gray-300 rounded-md text-white bg-black"
+            className="flex-1 px-4 py-2 max-w-[60%] sm:max-w-md border border-gray-600 rounded-md text-white bg-black"
           />
           <button
             onClick={handleSearch}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md cursor-pointer hover:bg-blue-600"
+            className="px-4 py-2  border border-gray-400 text-white rounded-md cursor-pointer hover:bg-blue-500"
           >
             Search
           </button>

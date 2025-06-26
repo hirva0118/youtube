@@ -69,3 +69,52 @@ export async function DELETE(
     );
   }
 }
+
+//update playlist
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ playlistId: string }> }
+) {
+  await connectToDatabase();
+  const reqBody = await request.json();
+  const { name, description } = reqBody;
+  const { playlistId } = await params;
+  try {
+    if (!playlistId) {
+      throw new Error("playlistId not provided");
+    }
+    if (!(name || description)) {
+      throw new Error("Please provide name and description");
+    }
+
+    const playlist = await PlayList.findById(playlistId);
+    if (!playlist) {
+      throw new Error("Playlist not found");
+    }
+
+    const user = await getUserFromRequest();
+
+    if (!(playlist.owner._id.toString() === user._id.toString())) {
+      throw new Error("User has to login to update playlist");
+    }
+
+    if (name) {
+      playlist.name = name;
+    }
+    if (description) {
+      playlist.description = description;
+    }
+
+    await playlist.save();
+    return NextResponse.json(
+      { success: true, message: "Playlist updated successfully", playlist },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json(
+      { success: false, message: "Something went wrong" },
+      { status: 500 }
+    );
+  }
+}

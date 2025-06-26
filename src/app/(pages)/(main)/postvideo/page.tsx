@@ -1,9 +1,22 @@
-
 "use client";
 
+import { getUserPlaylist } from "@/app/actions/playlistAction";
+import { getCurrentUser } from "@/app/actions/userActions";
 import axios from "axios";
 import { CldUploadWidget } from "next-cloudinary";
+import { redirect } from "next/navigation";
 import { useState } from "react";
+import { toast } from "react-toastify";
+
+interface playlistType {
+  playlist: [
+    {
+      _id: string;
+      name: string;
+      description: string;
+    }
+  ];
+}
 
 const PublishVideo = () => {
   const [videoUrl, setVideoUrl] = useState("");
@@ -11,13 +24,16 @@ const PublishVideo = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [duration, setDuration] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [isAddToPlaylistOpen, setIsAddToPlaylistOpen] = useState(false);
+  const [playlistName, setPlaylistName] = useState<playlistType | null>(null);
 
   // Handle video upload success
   const handleVideoUpload = (result: any, widget: any) => {
     if (result.event === "success") {
       setVideoUrl(result.info.secure_url);
       widget.close();
-      alert("Video Added");
+      toast.success("Video added");
     }
   };
 
@@ -26,12 +42,13 @@ const PublishVideo = () => {
     if (result.event === "success") {
       setThumbnailUrl(result.info.secure_url);
       widget.close();
-      alert("Thumbnail Added");
+      toast.success("Thumbnail added");
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
     const videoData = {
       title,
@@ -49,18 +66,32 @@ const PublishVideo = () => {
       setDuration(0);
       setThumbnailUrl("");
       setVideoUrl("");
-      alert("Video Posted Successfully");
+      toast.success("Video published successfully");
       window.location.href = "/myProfile";
       return response.data;
     } catch (error) {
       console.error("Error:", error);
-      alert("Something went wrong while publishing the video.");
+      toast.error("Something went wrong while publishing the video.");
+    } finally {
+      setLoading(false);
     }
   };
 
+  const handleCreatePlaylist = () => {
+    redirect("/createPlaylist");
+  };
+  const handleAddToPlaylist = async () => {
+    setIsAddToPlaylistOpen(!isAddToPlaylistOpen);
+    const res = await getCurrentUser();
+    console.log("currentuser", res);
+    const resp = await getUserPlaylist(res?.user?._id);
+    console.log("playlist name in resp:", resp);
+    setPlaylistName(resp);
+  };
+
   return (
-    <div className="bg-black min-h-screen h-full mt-10">
-      <div className="max-w-2xl mx-auto p-6 bg-gray-300 rounded-lg shadow-lg">
+    <div className="flex bg-black min-h-screen h-full mt-10">
+      <div className="max-w-2xl flex-1 m-auto mx-auto p-6 bg-gray-300 rounded-lg shadow-lg">
         <h2 className="text-2xl text-black font-semibold text-center mb-6">
           Publish Your Video
         </h2>
@@ -156,7 +187,7 @@ const PublishVideo = () => {
                 maxFileSize: 50 * 1024 * 1024,
                 maxImageFileSize: 50 * 1024 * 1024,
                 clientAllowedFormats: ["jpg", "jpeg", "png"],
-                maxChunkSize: 20 * 1024 * 1024, 
+                maxChunkSize: 20 * 1024 * 1024,
               }}
             >
               {({ open }) => (
@@ -172,12 +203,47 @@ const PublishVideo = () => {
           </div>
 
           {/* Submit Button */}
-          <div className="flex justify-center">
+          <div className="flex gap-2 justify-center">
             <button
               type="submit"
-              className="w-full py-3 px-6 cursor-pointer bg-white text-black border border-blue-800 font-semibold rounded-lg hover:bg-gray-200 focus:outline-none"
+              className="relative w-full py-3 px-6 cursor-pointer bg-white text-black border border-blue-800 font-semibold rounded-lg hover:bg-gray-200 focus:outline-none"
             >
+              {loading && (
+                <div className="absolute right-3 sm:right-56 top-1/2 transform -translate-y-1/2">
+                  <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              )}
               Publish Video
+            </button>
+            <button
+              onClick={handleAddToPlaylist}
+              className="relative w-full py-3 px-6 cursor-pointer bg-white text-black border border-blue-800 font-semibold rounded-lg hover:bg-gray-200 focus:outline-none"
+            >
+              Publish Video and add to Playlist
+            </button>
+          </div>
+          <div className="flex items-end justify-end">
+            {isAddToPlaylistOpen && (
+              <select
+                className="cursor-pointer py-2 border border-gray-600 rounded-md bg-white text-black"
+                title="playlistName"
+                value={playlistName?.playlist[0].name}
+                onChange={(e) => setPlaylistName(e.target.value)}
+              >
+                {playlistName?.playlist.map((play) => (
+                  <option key={play._id} value="name">
+                    {play.name}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+          <div className="flex justify-end items-end">
+            <button
+              onClick={handleCreatePlaylist}
+              className="hover:text-blue-800 border-b border-slate-600 text-black cursor-pointer"
+            >
+              Create a playlist
             </button>
           </div>
         </form>
@@ -187,15 +253,3 @@ const PublishVideo = () => {
 };
 
 export default PublishVideo;
-
-// import React from 'react'
-
-// const page = () => {
-//   return (
-//     <div>
-//       <p>hi</p>
-//     </div>
-//   )
-// }
-
-// export default page

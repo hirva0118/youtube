@@ -66,7 +66,7 @@ const Page = () => {
           title="sortBy"
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
-          className="cursor-pointer py-2 sm:mr-2 border border-gray-300 rounded-md text-slate-300 bg-black"
+          className="cursor-pointer py-2 sm:mr-2 border border-gray-600 rounded-md text-slate-300 bg-black"
         >
           <option value="">Sort by</option>
           <option value="createdAt">Date Created</option>
@@ -78,7 +78,7 @@ const Page = () => {
           title="sortType"
           value={sortType}
           onChange={(e) => setSortType(e.target.value)}
-          className="cursor-pointer py-2 sm:mr-2 border border-gray-300 text-slate-300 rounded-md  bg-black"
+          className="cursor-pointer py-2 sm:mr-2 border border-gray-600 text-slate-300 rounded-md bg-black"
         >
           <option value="asc">Ascending</option>
           <option value="desc">Descending</option>
@@ -86,7 +86,7 @@ const Page = () => {
 
         <button
           onClick={handleSearch}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md cursor-pointer hover:bg-blue-600"
+          className="px-4 py-2  border border-gray-400 text-white rounded-md cursor-pointer hover:bg-blue-500"
         >
           Apply Filter
         </button>
@@ -98,11 +98,11 @@ const Page = () => {
           placeholder="Search videos..."
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
-          className="flex-1 px-4 py-2 max-w-[60%] sm:max-w-md border border-gray-300 rounded-md text-white bg-black"
+          className="flex-1 px-4 py-2 max-w-[60%] sm:max-w-md border border-gray-600 rounded-md text-white bg-black"
         />
         <button
           onClick={handleSearch}
-          className="px-4 py-2 bg-blue-500 text-white cursor-pointer rounded-md hover:bg-blue-600"
+          className="px-4 py-2  border border-gray-400 text-white cursor-pointer rounded-md hover:bg-blue-500"
         >
           Search
         </button>
@@ -116,7 +116,7 @@ const Page = () => {
             <Link href={`/watchVideo/${video._id}`} key={video._id}>
               <div
                 key={video._id}
-                className="w-full h-full bg-gray-800 text-white rounded-lg  p-3"
+                className="w-full h-full bg-gray-800 text-white rounded-lg p-3"
               >
                 <img
                   className="w-full h-48 rounded mb-4"
@@ -131,7 +131,9 @@ const Page = () => {
                   />
                   <div className="flex flex-col">
                     <h3 className="font-semibold">{video.title}</h3>
-                    <p className="text-sm text-slate-400">{video.owner.fullName}</p>
+                    <p className="text-sm text-slate-400">
+                      {video.owner.fullName}
+                    </p>
                   </div>
                 </div>
               </div>
