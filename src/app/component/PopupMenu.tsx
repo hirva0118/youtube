@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import LogoutButton from "./LogoutButton";
 
 const PopupMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null); // 1. Create ref
 
+  // 2. Toggle the menu
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
@@ -15,21 +17,39 @@ const PopupMenu = () => {
     setIsOpen(false); // Close the menu
   };
 
+  // 3. Handle click outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
+
   return (
-    <div className="relative">
+    <div className="relative" ref={menuRef}>
+      {" "}
+      {/* 4. Attach ref here */}
       <button
         onClick={toggleMenu}
         className="bg-slate-600 cursor-pointer py-1 rounded-xl text-white"
       >
         Menu
       </button>
-
       {isOpen && (
         <div className="absolute top-12 mt-2 right-5 bg-gray-800 text-white shadow-md rounded-sm w-32 p-3">
           <ul className="space-y-2">
             <li className="hover:bg-slate-600">
               <Link
-                className=" p-2 cursor-pointer"
+                className="p-2 cursor-pointer"
                 href="/"
                 onClick={handleNavigation}
               >
@@ -38,7 +58,7 @@ const PopupMenu = () => {
             </li>
             <li className="hover:bg-slate-600">
               <Link
-                className=" p-2 cursor-pointer"
+                className="p-2 cursor-pointer"
                 href="/myProfile"
                 onClick={handleNavigation}
               >
@@ -54,7 +74,6 @@ const PopupMenu = () => {
                 Post Video
               </Link>
             </li>
-
             <li className="hover:bg-slate-600">
               <Link
                 className="pl-2 text-sm cursor-pointer"
@@ -64,9 +83,8 @@ const PopupMenu = () => {
                 Watch History
               </Link>
             </li>
-
-            <li className="hover:bg-slate-600 ">
-              <LogoutButton/>
+            <li className="hover:bg-slate-600">
+              <LogoutButton />
             </li>
           </ul>
         </div>

@@ -32,6 +32,13 @@ export default function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
           <nav className="bg-gray-800 text-white p-2 fixed w-full top-0 shadow-md z-10 flex justify-end">
+            <h1 className="absolute left-3 sm:left-1/2 transform translate-x-1 sm:-translate-x-1/2">
+              <img
+                src="https://see.fontimg.com/api/rf5/8Ox1B/ZWMxNTNiYjgxYzJhNGNjM2I0NjdkNDRlOTU1NWIyZWIudHRm/Vmlld1R1YmU/sacrifice-demo.png?r=fs&h=65&w=1000&fg=FFFFFF&bg=353D4B&tb=1&s=65"
+                alt="ViewTube Logo"
+                className="pt-2 h-8 object-contain"
+              />
+            </h1>
             <ul className="flex space-x-3 cursor-pointer">
               <li className="bg-slate-600 px-5 py-2 rounded-xl">
                 <PopupMenu />

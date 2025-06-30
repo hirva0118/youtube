@@ -59,53 +59,53 @@ const Page = () => {
 
   return (
     <div className="min-h-screen h-full bg-black">
-      <p className="text-white text-2xl text-center p-5">Home page</p>
 
-      <div className="flex p-2 flex-col gap-2 sm:flex-row justify-end mb-10">
-        <select
-          title="sortBy"
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
-          className="cursor-pointer py-2 sm:mr-2 border border-gray-600 rounded-md text-slate-300 bg-black"
-        >
-          <option value="">Sort by</option>
-          <option value="createdAt">Date Created</option>
-          <option value="views">Views</option>
-          <option value="duration">Duration</option>
-        </select>
+      <div className="flex pt-20 flex-col gap-2 md:flex-row justify-between ">
+        <div className="mb-6 pl-2 flex gap-2">
+          <input
+            type="text"
+            placeholder="Search videos..."
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            className="flex-1 px-4 py-2 max-w-[100%] sm:max-w-lg border border-gray-600 rounded-md text-white bg-black"
+          />
+          <button
+            onClick={handleSearch}
+            className="px-4 py-2  border border-gray-400 text-white cursor-pointer rounded-md hover:bg-blue-500"
+          >
+            Search
+          </button>
+        </div>
+        <div className="pr-2">
+          <select
+            title="sortBy"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="cursor-pointer py-2 sm:mr-2 border border-gray-600 rounded-md text-slate-300 bg-black"
+          >
+            <option value="">Sort by</option>
+            <option value="createdAt">Date Created</option>
+            <option value="views">Views</option>
+            <option value="duration">Duration</option>
+          </select>
 
-        <select
-          title="sortType"
-          value={sortType}
-          onChange={(e) => setSortType(e.target.value)}
-          className="cursor-pointer py-2 sm:mr-2 border border-gray-600 text-slate-300 rounded-md bg-black"
-        >
-          <option value="asc">Ascending</option>
-          <option value="desc">Descending</option>
-        </select>
+          <select
+            title="sortType"
+            value={sortType}
+            onChange={(e) => setSortType(e.target.value)}
+            className="cursor-pointer py-2 sm:mr-2 border border-gray-600 text-slate-300 rounded-md bg-black"
+          >
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
 
-        <button
-          onClick={handleSearch}
-          className="px-4 py-2  border border-gray-400 text-white rounded-md cursor-pointer hover:bg-blue-500"
-        >
-          Apply Filter
-        </button>
-      </div>
-
-      <div className="mb-6 p-2 flex gap-2">
-        <input
-          type="text"
-          placeholder="Search videos..."
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          className="flex-1 px-4 py-2 max-w-[60%] sm:max-w-md border border-gray-600 rounded-md text-white bg-black"
-        />
-        <button
-          onClick={handleSearch}
-          className="px-4 py-2  border border-gray-400 text-white cursor-pointer rounded-md hover:bg-blue-500"
-        >
-          Search
-        </button>
+          <button
+            onClick={handleSearch}
+            className="px-4 py-1  border border-gray-400 text-white rounded-md cursor-pointer hover:bg-blue-500"
+          >
+            Apply Filter
+          </button>
+        </div>
       </div>
 
       {loading ? (

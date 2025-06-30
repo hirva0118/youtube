@@ -80,7 +80,7 @@ export async function PATCH(
       throw new Error("Playlist not found");
     }
 
-    const user = await getUserFromRequest();
+    const user = await getUserFromRequest(); 
 
     if (!(playlist.owner.toString() === user._id.toString())) {
       throw new Error("User has to login to add video to playlist");

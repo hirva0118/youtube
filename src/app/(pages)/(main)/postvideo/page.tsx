@@ -1,21 +1,28 @@
 "use client";
 
-import { getUserPlaylist } from "@/app/actions/playlistAction";
+import { addVideoToPlaylist, getUserPlaylist } from "@/app/actions/playlistAction";
 import { getCurrentUser } from "@/app/actions/userActions";
 import axios from "axios";
 import { CldUploadWidget } from "next-cloudinary";
 import { redirect } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 interface playlistType {
-  playlist: [
-    {
-      _id: string;
-      name: string;
-      description: string;
-    }
-  ];
+  playlist: {
+    _id: string;
+    name: string;
+    description: string;
+  }[];
+}
+
+interface VideoData {
+  title: string;
+  description: string;
+  videoFile: string;
+  thumbnail: string;
+  duration: number;
+  playlistName?: string; 
 }
 
 const PublishVideo = () => {
@@ -25,8 +32,24 @@ const PublishVideo = () => {
   const [description, setDescription] = useState("");
   const [duration, setDuration] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [isAddToPlaylistOpen, setIsAddToPlaylistOpen] = useState(false);
-  const [playlistName, setPlaylistName] = useState<playlistType | null>(null);
+  const [playlistName, setPlaylistName] = useState<playlistType>({
+    playlist: [],
+  });
+
+  const [selectedPlaylistId, setSelectedPlaylistId] = useState<string>("");
+
+  useEffect(() => {
+    const fetchPlaylists = async () => {
+      const res = await getCurrentUser();
+      const resp = await getUserPlaylist(res?.user?._id);
+      console.log(resp,"playlistname:::")
+      setPlaylistName(resp);
+      if (resp?.playlist?.length > 0) {
+        setSelectedPlaylistId("");
+      }
+    };
+    fetchPlaylists();
+  }, []);
 
   // Handle video upload success
   const handleVideoUpload = (result: any, widget: any) => {
@@ -50,17 +73,23 @@ const PublishVideo = () => {
     e.preventDefault();
     setLoading(true);
 
-    const videoData = {
+    const videoData: VideoData = {
       title,
       description,
       videoFile: videoUrl,
       thumbnail: thumbnailUrl,
       duration,
     };
-
+    
     try {
       const response = await axios.post("/api/video/publishVideo", videoData);
-      console.log("Response:", response.data);
+      console.log("Response::::::", response.data);
+      const videoId = response.data.data?._id;
+
+      if(selectedPlaylistId){
+        await addVideoToPlaylist(selectedPlaylistId,videoId);
+      }
+      
       setTitle("");
       setDescription("");
       setDuration(0);
@@ -80,14 +109,7 @@ const PublishVideo = () => {
   const handleCreatePlaylist = () => {
     redirect("/createPlaylist");
   };
-  const handleAddToPlaylist = async () => {
-    setIsAddToPlaylistOpen(!isAddToPlaylistOpen);
-    const res = await getCurrentUser();
-    console.log("currentuser", res);
-    const resp = await getUserPlaylist(res?.user?._id);
-    console.log("playlist name in resp:", resp);
-    setPlaylistName(resp);
-  };
+
 
   return (
     <div className="flex bg-black min-h-screen h-full mt-10">
@@ -95,7 +117,7 @@ const PublishVideo = () => {
         <h2 className="text-2xl text-black font-semibold text-center mb-6">
           Publish Your Video
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-3">
           {/* Title Input */}
           <div className="space-y-2">
             <label
@@ -153,7 +175,7 @@ const PublishVideo = () => {
           </div>
 
           {/* Video Upload */}
-          <div className="flex flex-col items-center space-y-4">
+          <div className="flex gap-2 justify-between items-center mt-4">
             <CldUploadWidget
               signatureEndpoint="/api/cloudinary"
               onSuccess={handleVideoUpload}
@@ -202,42 +224,6 @@ const PublishVideo = () => {
             </CldUploadWidget>
           </div>
 
-          {/* Submit Button */}
-          <div className="flex gap-2 justify-center">
-            <button
-              type="submit"
-              className="relative w-full py-3 px-6 cursor-pointer bg-white text-black border border-blue-800 font-semibold rounded-lg hover:bg-gray-200 focus:outline-none"
-            >
-              {loading && (
-                <div className="absolute right-3 sm:right-56 top-1/2 transform -translate-y-1/2">
-                  <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
-                </div>
-              )}
-              Publish Video
-            </button>
-            <button
-              onClick={handleAddToPlaylist}
-              className="relative w-full py-3 px-6 cursor-pointer bg-white text-black border border-blue-800 font-semibold rounded-lg hover:bg-gray-200 focus:outline-none"
-            >
-              Publish Video and add to Playlist
-            </button>
-          </div>
-          <div className="flex items-end justify-end">
-            {isAddToPlaylistOpen && (
-              <select
-                className="cursor-pointer py-2 border border-gray-600 rounded-md bg-white text-black"
-                title="playlistName"
-                value={playlistName?.playlist[0].name}
-                onChange={(e) => setPlaylistName(e.target.value)}
-              >
-                {playlistName?.playlist.map((play) => (
-                  <option key={play._id} value="name">
-                    {play.name}
-                  </option>
-                ))}
-              </select>
-            )}
-          </div>
           <div className="flex justify-end items-end">
             <button
               onClick={handleCreatePlaylist}
@@ -246,6 +232,33 @@ const PublishVideo = () => {
               Create a playlist
             </button>
           </div>
+
+          {playlistName?.playlist?.length > 0 && (
+            <select
+              className="py-2 px-2 border border-gray-600 rounded-md bg-white text-black text-sm cursor-pointer"
+              value={selectedPlaylistId}
+              onChange={(e) => setSelectedPlaylistId(e.target.value)}
+            >
+              <option value="">-- No Playlist --</option>
+              {playlistName?.playlist.map((play) => (
+                <option key={play._id} value={play._id}>
+                  {play.name}
+                </option>
+              ))}
+            </select>
+          )}
+
+          {/* Publish Button */}
+          <button
+            type="submit"
+            className="relative py-1 px-4 ml-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 cursor-pointer"
+          >
+            {loading ? (
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto" />
+            ) : (
+              "Publish"
+            )}
+          </button>
         </form>
       </div>
     </div>

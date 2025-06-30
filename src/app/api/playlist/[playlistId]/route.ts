@@ -2,6 +2,8 @@ import { PlayList } from "@/models/playlist.model";
 import { getUserFromRequest } from "@/utils/auth";
 import { connectToDatabase } from "@/utils/mongodb";
 import { NextRequest, NextResponse } from "next/server";
+import { Video } from "@/models/video.model";
+
 
 //get playlist by ID
 export async function GET(
@@ -15,7 +17,7 @@ export async function GET(
       throw new Error("Playlist not Found");
     }
 
-    const playlist = await PlayList.findById(playlistId);
+    const playlist = await PlayList.findById(playlistId).populate("videos");
     if (!playlist) {
       throw new Error("Playlist not found");
     }

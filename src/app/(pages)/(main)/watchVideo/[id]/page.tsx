@@ -1,7 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { addToWatchHistory, getVideoById, likeDislikeVideo } from "@/app/actions/videoAction";
+import {
+  addToWatchHistory,
+  getVideoById,
+  likeDislikeVideo,
+} from "@/app/actions/videoAction";
 import {
   addComment,
   deleteComment,
@@ -16,6 +20,8 @@ import {
   getUserChannel,
   toggleSubscription,
 } from "@/app/actions/subscribeAction";
+import { addVideoToPlaylist, getUserPlaylist } from "@/app/actions/playlistAction";
+import { toast } from "react-toastify";
 
 interface CommentType {
   _id: string;
@@ -32,6 +38,13 @@ interface CommentType {
 interface currentUserProp {
   _id: string;
 }
+interface playlistType {
+  playlist: {
+    _id: string;
+    name: string;
+    description: string;
+  }[];
+}
 
 const Page = ({ params }: { params: Promise<{ id: string }> }) => {
   const [video, setVideo] = useState<any>(null);
@@ -42,6 +55,11 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
   const [currentUser, setCurrentUser] = useState<currentUserProp | null>(null);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [subscribersCount, setSubscribersCount] = useState(0);
+  const [playlistName, setPlaylistName] = useState<playlistType>({
+    playlist: [],
+  });
+  const [selectedPlaylistId, setSelectedPlaylistId] = useState<string>("");
+  const [loadingButton, setLoadingButton] = useState(false)
 
   useEffect(() => {
     const fetchVideo = async () => {
@@ -71,12 +89,11 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
             setIsSubscribed(false); // Handle error case
           }
 
-          setSubscribersCount(res.data.subscribersCount)
+          setSubscribersCount(res.data.subscribersCount);
         } else {
           console.error("Video owner username is missing!");
           setIsSubscribed(false);
         }
-        
       } catch (err) {
         console.error("Failed to fetch video:", err);
       } finally {
@@ -92,16 +109,27 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
       console.log("comment", comment);
     };
 
-    const addVideoToWatchHistory = async() => {
-      const {id} = await params;
-      const videoId =id;
+    const addVideoToWatchHistory = async () => {
+      const { id } = await params;
+      const videoId = id;
       const res = await addToWatchHistory(videoId);
-      console.log(res)
-    }
+      console.log(res);
+    };
+
+    const fetchPlaylist = async () => {
+      const res = await getCurrentUser();
+      const resp = await getUserPlaylist(res?.user?._id);
+      console.log(resp, "playlistname:::");
+      setPlaylistName(resp);
+      if (resp?.playlist?.length > 0) {
+        setSelectedPlaylistId("");
+      }
+    };
 
     addVideoToWatchHistory();
     fetchVideo();
     fetchAllComments();
+    fetchPlaylist();
   }, []);
 
   const handleLikeDislikeVideo = async () => {
@@ -190,13 +218,31 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
 
   const toggleMenu = (id: string) => {
     setMenuOpenId((prevId) => (prevId === id ? null : id));
-  };  
-
-  
+  };
 
   // if (!video) {
   //   return <p className="text-red-500 p-6 pt-10">Video not found</p>;
   // }
+
+  const handleSubmit = async() => {
+    try {
+      setLoadingButton(true)
+      if(selectedPlaylistId){
+        const { id } = await params;
+        const videoId = id;
+        const res = await addVideoToPlaylist(selectedPlaylistId,videoId)
+        if(res.success){
+          toast.success("Video addedd")
+        }else{
+          toast.error("Failed")
+        }
+      }
+    } catch (error) {
+      console.log(error)
+    }finally{
+      setLoadingButton(false)
+    }
+  }
 
   if (loading) {
     return (
@@ -213,38 +259,15 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
 
   return (
     <div className="bg-gray-900 min-h-screen px-4 py-8 text-white">
-      <div className="max-w-4xl mx-auto bg-gray-800 rounded-xl p-6 ">
+      <div className="max-w-4xl mx-auto bg-gray-800 rounded-xl p-3 sm:p-6 ">
         <video className="w-full rounded-lg" controls src={video.videoFile} />
-        <h1 className="text-2xl font-semibold mb-3 mt-2">{video.title}</h1>
 
-        <div className=" flex justify-between pb-4">
-          <div className="flex gap-3 items-center">
-            <img
-              className="w-10 h-10  rounded-full "
-              alt="profile"
-              src={video.owner.avatar}
-            />
-            <div>
-              <h1 className="text-lg font-semibold">{video.owner.fullName}</h1>
-              <p className="text-sm text-gray-300">{subscribersCount} subscribers</p>
-            </div>
-            {isSubscribed ? (
-              <button
-                className="bg-slate-600 px-4 py-2 ml-6 cursor-pointer hover:bg-slate-700 text-white rounded-3xl"
-                onClick={handleToggleSubscribe}
-              >
-                Unsubscribe
-              </button>
-            ) : (
-              <button
-                className="bg-slate-600 px-4 py-2 ml-6 cursor-pointer hover:bg-slate-700 text-white rounded-3xl"
-                onClick={handleToggleSubscribe}
-              >
-                Subscribe
-              </button>
-            )}
-          </div>
+        <div className="flex justify-between">
           <div>
+            <h1 className="text-2xl font-semibold mb-3 mt-2">{video.title}</h1>
+          </div>
+
+          <div className="mt-2">
             {video.isLiked ? (
               <div className="flex items-center gap-2 pb-3 ">
                 <BiSolidLike
@@ -262,6 +285,63 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
                 <span>{video.likeCount}</span>
               </div>
             )}
+          </div>
+        </div>
+
+        <div className=" flex flex-col sm:flex-row justify-between pb-4">
+          <div className="flex gap-1 sm:gap-3 items-center">
+            <img
+              className="w-10 h-10  rounded-full "
+              alt="profile"
+              src={video.owner.avatar}
+            />
+            <div>
+              <h1 className="text-lg font-semibold">{video.owner.fullName}</h1>
+              <p className="text-sm text-gray-300">
+                {subscribersCount} subscribers
+              </p>
+            </div>
+            {isSubscribed ? (
+              <button
+                className="bg-slate-600 px-4 text-sm py-2 ml-2 sm:ml-6 cursor-pointer hover:bg-slate-700 text-white rounded-3xl"
+                onClick={handleToggleSubscribe}
+              >
+                Unsubscribe
+              </button>
+            ) : (
+              <button
+                className="bg-slate-600 px-4 text-sm py-2 ml-2 sm:ml-6 cursor-pointer hover:bg-slate-700 text-white rounded-3xl"
+                onClick={handleToggleSubscribe}
+              >
+                Subscribe
+              </button>
+            )}
+          </div>
+          <div className="flex gap-2 mb-4 mt-4">
+            <select
+              className="h-7 px-2 border border-gray-600 rounded-md bg-slate-600 hover:bg-slate-700 text-white text-sm cursor-pointer"
+              value={selectedPlaylistId}
+              onChange={(e) => setSelectedPlaylistId(e.target.value)}
+            >
+              <option value=""> Add to Playlist</option>
+              {playlistName.playlist.map((play) => (
+                <option key={play._id} value={play._id}>
+                  {play.name}
+                </option>
+              ))}
+            </select>
+            <button
+              className="h-7 border border-slate-400 rounded-md px-5 cursor-pointer hover:bg-slate-600 text-sm relative"
+              disabled={!selectedPlaylistId}
+              onClick={handleSubmit}
+            >
+              {loadingButton && (
+                <div className="absolute right-1 top-1/2 transform -translate-y-1/2">
+                  <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              )}
+              Add
+            </button>
           </div>
         </div>
 
