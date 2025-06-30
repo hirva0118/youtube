@@ -32,7 +32,7 @@ const Page = () => {
     }
 
   return (
-    <div className="bg-black min-h-screen h-full m-auto mt-20">
+    <div className="bg-black min-h-screen h-full m-auto pt-20">
       <div className=" text-white  max-w-md mx-auto p-4 border rounded shadow">
         <div className="flex justify-center items-center gap-4 mb-4">
           <h1 className="text-2xl text-center">Create Playlist</h1>

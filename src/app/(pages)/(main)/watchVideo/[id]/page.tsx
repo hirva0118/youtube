@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   addToWatchHistory,
   getVideoById,
@@ -59,7 +59,9 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
     playlist: [],
   });
   const [selectedPlaylistId, setSelectedPlaylistId] = useState<string>("");
-  const [loadingButton, setLoadingButton] = useState(false)
+  const [loadingButton, setLoadingButton] = useState(false);
+  const menuRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+  
 
   useEffect(() => {
     const fetchVideo = async () => {
@@ -131,6 +133,21 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
     fetchAllComments();
     fetchPlaylist();
   }, []);
+
+  useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+        if (
+          menuOpenId &&
+          menuRefs.current[menuOpenId] &&
+          !menuRefs.current[menuOpenId]?.contains(event.target as Node)
+        ) {
+          setMenuOpenId(null);
+        }
+      };
+  
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [menuOpenId]);
 
   const handleLikeDislikeVideo = async () => {
     try {
@@ -246,7 +263,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
 
   if (loading) {
     return (
-      <div className="pt-32">
+      <div className="pt-32 bg-black">
         <div className=" flex justify-center items-center p-10">
           <div className="text-center">
             <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
@@ -290,11 +307,13 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
 
         <div className=" flex flex-col sm:flex-row justify-between pb-4">
           <div className="flex gap-1 sm:gap-3 items-center">
-            <img
-              className="w-10 h-10  rounded-full "
-              alt="profile"
-              src={video.owner.avatar}
-            />
+            
+              <img
+                className="w-10 h-10  rounded-full "
+                alt="profile"
+                src={video.owner.avatar}
+              />
+           
             <div>
               <h1 className="text-lg font-semibold">{video.owner.fullName}</h1>
               <p className="text-sm text-gray-300">
@@ -370,7 +389,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
               comment.map((cmt: any) => (
                 <div className=" rounded-md" key={cmt._id}>
                   <div className="flex gap-3">
-                    <div>
+                    <div className="">
                       <img
                         className="w-10 h-10 rounded-full"
                         alt="name"
@@ -400,7 +419,10 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
                         )}
                       </div>
                     </div>
-                    <div className="relative">
+                    <div
+                      className="relative"
+                      ref={(ref) => (menuRefs.current[cmt._id] = ref)}
+                    >
                       {currentUser && currentUser._id === cmt?.owner?._id && (
                         <button
                           onClick={() => toggleMenu(cmt._id)}
@@ -411,13 +433,13 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
                         </button>
                       )}
                       {menuOpenId === cmt._id && (
-                        <div className="absolute left-5">
+                        <div className="absolute right-4 ">
                           <button
                             onClick={() => {
                               handleDeleteComment(cmt._id);
                               setMenuOpenId(null);
                             }}
-                            className="block bg-gray-600 w-full px-4 py-1 text-sm hover:bg-gray-500 text-left cursor-pointer"
+                            className="block bg-gray-600 w-full px-4 py-1 text-sm hover:bg-gray-500 text-left cursor-pointer rounded-md"
                           >
                             Delete
                           </button>

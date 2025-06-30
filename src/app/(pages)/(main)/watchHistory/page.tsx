@@ -41,7 +41,7 @@ const Page = () => {
 
   if (loading) {
     return (
-      <div className="pt-32">
+      <div className="pt-32 bg-black">
         <div className=" flex justify-center items-center p-10">
           <div className="text-center">
             <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
@@ -69,8 +69,8 @@ const Page = () => {
   };
 
   return (
-    <div>
-      <h1 className="text-center pt-3 text-2xl font-semibold mb-3 mt-10">
+    <div className="bg-black">
+      <h1 className="text-center pt-3 text-2xl font-semibold mb-3 mt-8 text-white">
         Watch History
       </h1>
       <ul className="grid grid-cols-1  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-3 gap-4 pt-5">
@@ -86,7 +86,7 @@ const Page = () => {
                     src={watch.owner.avatar}
                   />
                   <div className="flex flex-col mt-2">
-                    <h3 className="font-semibold">{watch.title}</h3>
+                    <h3 className="font-semibold text-white">{watch.title}</h3>
                     <p className="text-sm text-slate-400">
                       {watch.owner.fullName}
                     </p>

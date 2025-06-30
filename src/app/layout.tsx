@@ -40,7 +40,7 @@ export default function RootLayout({
               />
             </h1>
             <ul className="flex space-x-3 cursor-pointer">
-              <li className="bg-slate-600 px-5 py-2 rounded-xl">
+              <li className="bg-slate-600 px-3 py-1 rounded-lg">
                 <PopupMenu />
               </li>
             </ul>

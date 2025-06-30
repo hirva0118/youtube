@@ -177,7 +177,7 @@ const Page = () => {
 
   if (loading) {
     return (
-      <div className="pt-32">
+      <div className="pt-32 bg-black">
         <div className=" flex justify-center items-center p-10">
           <div className="text-center">
             <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
@@ -203,8 +203,8 @@ const Page = () => {
               alt="avatar"
               src={currentUser?.user?.avatar}
             />
-            <p className="text-xl">{currentUser?.user.fullName}</p>
-            <p>{subscribeData?.subscribersCount} Subscribers</p>
+            <p className="text-xl text-white">{currentUser?.user.fullName}</p>
+            <p className="text-white">{subscribeData?.subscribersCount} Subscribers</p>
           </div>
         </div>
         {/* Filters and Search */}
@@ -223,7 +223,7 @@ const Page = () => {
             />
             <button
               onClick={handleSearch}
-              className="px-4 py-2  border border-gray-400 text-white rounded-md cursor-pointer hover:bg-blue-500"
+              className="px-4 py-2 text-sm border border-gray-400 text-white rounded-md cursor-pointer hover:bg-blue-500"
               disabled={activeTab === "playlists"}
             >
               Search
