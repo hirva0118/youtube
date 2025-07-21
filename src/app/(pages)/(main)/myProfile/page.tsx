@@ -270,7 +270,7 @@ const Page = () => {
         {/* Video Cards */}
         {loading ? (
           <p className="text-gray-500"></p>
-        ) : videoList.length > 0 ? (
+        ) : videoList.length >= 0 ? (
           <>
             <div className="flex justify-center gap-4 mb-4">
               <button
