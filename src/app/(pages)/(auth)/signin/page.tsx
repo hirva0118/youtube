@@ -21,7 +21,7 @@ const Page = () => {
       const result = await signin(values);
       if (result.success) {
         toast.success("Logged in successfully");
-        window.location.href = "main/home";
+        window.location.href = "/main/home";
       } else {
         toast.error(result?.message || "Invalid credentials");
       }
