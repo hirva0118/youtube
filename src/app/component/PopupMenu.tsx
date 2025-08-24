@@ -57,7 +57,7 @@ const PopupMenu = () => {
             <li className="hover:bg-slate-600">
               <Link
                 className="p-2 cursor-pointer"
-                href="/"
+                href="/home"
                 onClick={handleNavigation}
               >
                 Home

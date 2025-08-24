@@ -42,7 +42,7 @@ export async function POST(
     if (!video) {
       throw new Error("Video not found");
     }
-    playlist.videos.push(video);
+    playlist.videos.push(video._id);
     await playlist.save();
     return NextResponse.json(
       {
