@@ -2,7 +2,6 @@ import { PlayList } from "@/models/playlist.model";
 import { getUserFromRequest } from "@/utils/auth";
 import { connectToDatabase } from "@/utils/mongodb";
 import { NextRequest, NextResponse } from "next/server";
-import { Video } from "@/models/video.model";
 
 
 //get playlist by ID

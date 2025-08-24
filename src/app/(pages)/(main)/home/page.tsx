@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getAllVideo } from "./actions/videoAction";
 import Link from "next/link";
+import { getAllVideo } from "@/app/actions/videoAction";
 
 const Page = () => {
   const [videoList, setVideoList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [sortBy, setSortBy] = useState("");
-  const [sortType, setSortType] = useState(undefined);
+  const [sortType, setSortType] = useState<undefined | "asc"|"desc">(undefined);
   const [searchQuery, setSearchQuery] = useState("");
   const [inputText, setInputText] = useState("");
 
@@ -92,7 +92,7 @@ const Page = () => {
           <select
             title="sortType"
             value={sortType}
-            onChange={(e) => setSortType(e.target.value)}
+            onChange={(e) => setSortType(e.target.value as "asc" | "desc")}
             className="cursor-pointer py-2 sm:mr-2 border border-gray-600 text-slate-300 rounded-md bg-black"
           >
             <option value="asc">Ascending</option>

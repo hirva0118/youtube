@@ -1,38 +1,38 @@
 "use client";
 
 import { signin } from "@/app/actions/userActions";
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import Link from "next/link";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import * as Yup from "yup";
 
+const loginSchema = Yup.object({
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  password: Yup.string().required("Password is required"),
+});
 
 const Page = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
-    const payload = {
-      email,
-      password,
-    };
+  const handleLogin = async (values: { email: string; password: string }) => {
     try {
-      setLoading(true)
-      const result = await signin(payload);
+      setLoading(true);
+      const result = await signin(values);
       if (result.success) {
-        setEmail("");
-        setPassword("");
         toast.success("Logged in successfully");
         window.location.href = "/";
       } else {
-        alert(result.message);
+        toast.error(result?.message || "Invalid credentials");
       }
-    } catch (error:any) {
-      console.log(error);
-      toast.error(error);
-
-    }finally{
-      setLoading(false)
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Something went wrong");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -42,33 +42,57 @@ const Page = () => {
         <div className="flex justify-center items-center gap-4 mb-4">
           <h1 className="text-2xl text-center">Login</h1>
         </div>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          className="border w-full p-2 mb-4"
-          onChange={(e) => setEmail(e.target.value)}
-        />
-
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          className="border w-full p-2 mb-4"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-
-        <button
-          onClick={handleLogin}
-          className="bg-blue-500 text-white w-full py-2 rounded cursor-pointer relative"
+        <Formik
+          initialValues={{ email: "", password: "" }}
+          validationSchema={loginSchema}
+          onSubmit={handleLogin}
         >
-          {loading && (
-            <div className="absolute right-3 sm:right-40 top-1/2 transform -translate-y-1/2">
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-            </div>
+          {() => (
+            <Form>
+              <div className="mb-4">
+                <Field
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  className="border w-full p-2"
+                />
+                <ErrorMessage
+                  name="email"
+                  component="div"
+                  className="text-red-400 text-sm mt-1"
+                />
+              </div>
+
+              <div className="mb-4">
+                <Field
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  className="border w-full p-2"
+                />
+                <ErrorMessage
+                  name="password"
+                  component="div"
+                  className="text-red-400 text-sm mt-1"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="bg-blue-500 text-white w-full py-2 rounded cursor-pointer relative"
+                disabled={loading}
+              >
+                {loading && (
+                  <div className="absolute right-3 sm:right-40 top-1/2 transform -translate-y-1/2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  </div>
+                )}
+                Login
+              </button>
+            </Form>
           )}
-          Login
-        </button>
+        </Formik>
+
         <div className="flex justify-between  mt-4 cursor-pointer text-blue-300 text-sm">
           <Link href="/signup">Create an account</Link>
           <Link href="/changePassword">Change password</Link>

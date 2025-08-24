@@ -13,10 +13,16 @@ const generateAccessAndRefreshToken = async (userId: string) => {
     await user.save({ validateBeforeSave: true });
 
     return { accessToken, refreshToken };
-  } catch (error: any) {
+  } catch (error: unknown) {
+  if (error instanceof Error) {
     console.error("Token generation error:", error.message);
-    throw new Error("Failed to generate tokens");
+  } else {
+    console.error("Token generation error:", error);
   }
+
+  throw new Error("Failed to generate tokens");
+}
+
 };
 
 export async function POST(request: NextRequest) {

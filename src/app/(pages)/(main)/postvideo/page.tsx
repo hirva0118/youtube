@@ -1,6 +1,9 @@
 "use client";
 
-import { addVideoToPlaylist, getUserPlaylist } from "@/app/actions/playlistAction";
+import {
+  addVideoToPlaylist,
+  getUserPlaylist,
+} from "@/app/actions/playlistAction";
 import { getCurrentUser } from "@/app/actions/userActions";
 import axios from "axios";
 import { CldUploadWidget } from "next-cloudinary";
@@ -22,7 +25,7 @@ interface VideoData {
   videoFile: string;
   thumbnail: string;
   duration: number;
-  playlistName?: string; 
+  playlistName?: string;
 }
 
 const PublishVideo = () => {
@@ -42,7 +45,7 @@ const PublishVideo = () => {
     const fetchPlaylists = async () => {
       const res = await getCurrentUser();
       const resp = await getUserPlaylist(res?.user?._id);
-      console.log(resp,"playlistname:::")
+      console.log(resp, "playlistname:::");
       setPlaylistName(resp);
       if (resp?.playlist?.length > 0) {
         setSelectedPlaylistId("");
@@ -80,16 +83,16 @@ const PublishVideo = () => {
       thumbnail: thumbnailUrl,
       duration,
     };
-    
+
     try {
       const response = await axios.post("/api/video/publishVideo", videoData);
       console.log("Response::::::", response.data);
       const videoId = response.data.data?._id;
 
-      if(selectedPlaylistId){
-        await addVideoToPlaylist(selectedPlaylistId,videoId);
+      if (selectedPlaylistId) {
+        await addVideoToPlaylist(selectedPlaylistId, videoId);
       }
-      
+
       setTitle("");
       setDescription("");
       setDuration(0);
@@ -109,7 +112,6 @@ const PublishVideo = () => {
   const handleCreatePlaylist = () => {
     redirect("/createPlaylist");
   };
-
 
   return (
     <div className="flex bg-black min-h-screen h-full ">
@@ -168,7 +170,9 @@ const PublishVideo = () => {
               type="number"
               placeholder="Enter video duration"
               value={duration}
-              onChange={(e: any) => setDuration(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setDuration(Number(e.target.value))
+              }
               className="w-full px-4 py-2 text-black bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required
             />
@@ -232,33 +236,34 @@ const PublishVideo = () => {
               Create a playlist
             </button>
           </div>
-
-          {playlistName?.playlist?.length > 0 && (
-            <select
-              className="py-2 px-2 border border-gray-600 rounded-md bg-white text-black text-sm cursor-pointer"
-              value={selectedPlaylistId}
-              onChange={(e) => setSelectedPlaylistId(e.target.value)}
-            >
-              <option value="">-- No Playlist --</option>
-              {playlistName?.playlist.map((play) => (
-                <option key={play._id} value={play._id}>
-                  {play.name}
-                </option>
-              ))}
-            </select>
-          )}
-
-          {/* Publish Button */}
-          <button
-            type="submit"
-            className="relative py-1 px-4 ml-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 cursor-pointer"
-          >
-            {loading ? (
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto" />
-            ) : (
-              "Publish"
+          <div className="flex items-center">
+            {playlistName?.playlist?.length > 0 && (
+              <select
+                className="py-2 px-2 border border-gray-600 rounded-md bg-white text-black text-sm cursor-pointer"
+                value={selectedPlaylistId}
+                onChange={(e) => setSelectedPlaylistId(e.target.value)}
+              >
+                <option value="">-- No Playlist --</option>
+                {playlistName?.playlist.map((play) => (
+                  <option key={play._id} value={play._id}>
+                    {play.name}
+                  </option>
+                ))}
+              </select>
             )}
-          </button>
+
+            {/* Publish Button */}
+            <button
+              type="submit"
+              className="relative py-1 px-4 ml-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 cursor-pointer"
+            >
+              {loading ? (
+                <div className=" p-[10px] border-2 border-white border-t-transparent rounded-full animate-spin mx-auto" />
+              ) : (
+                "Publish"
+              )}
+            </button>
+          </div>
         </form>
       </div>
     </div>

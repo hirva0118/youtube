@@ -42,11 +42,16 @@ export async function POST(request: NextRequest) {
       data: newVideo,
     }, { status: 200 });
 
-  } catch (error:any) {
-    console.log("Error publishing video:", error);
-    return NextResponse.json(
-      { error: error.message || "Something went wrong" },
-      { status: 500 }
-    );
-  }
+  } catch (error: unknown) {
+  console.log("Error publishing video:", error);
+
+  const errorMessage =
+    error instanceof Error ? error.message : "Something went wrong";
+
+  return NextResponse.json(
+    { error: errorMessage },
+    { status: 500 }
+  );
+}
+
 }

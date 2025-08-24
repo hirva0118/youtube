@@ -37,7 +37,9 @@ const Page = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [inputText, setInputText] = useState("");
   const [sortBy, setSortBy] = useState("");
-  const [sortType, setSortType] = useState(undefined);
+  const [sortType, setSortType] = useState<undefined | "asc" | "desc">(
+    undefined
+  );
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
   const [menuPlaylistOpenId, setMenuPlaylistOpenId] = useState<string | null>(
     null
@@ -105,7 +107,7 @@ const Page = () => {
 
   const handleSearch = () => {
     setSearchQuery(inputText.trim());
-    fetchVideos(inputText.trim());
+    fetchVideos(searchQuery);
   };
 
   const handleDelete = async (id: string) => {
@@ -204,7 +206,9 @@ const Page = () => {
               src={currentUser?.user?.avatar}
             />
             <p className="text-xl text-white">{currentUser?.user.fullName}</p>
-            <p className="text-white">{subscribeData?.subscribersCount} Subscribers</p>
+            <p className="text-white">
+              {subscribeData?.subscribersCount} Subscribers
+            </p>
           </div>
         </div>
         {/* Filters and Search */}
@@ -248,7 +252,7 @@ const Page = () => {
             <select
               title="sortType"
               value={sortType}
-              onChange={(e) => setSortType(e.target.value)}
+              onChange={(e) => setSortType(e.target.value as "asc" | "desc")}
               className="text-sm h-10 px-2 border border-gray-600 rounded-md text-white bg-black cursor-pointer"
               disabled={activeTab === "playlists"}
             >
@@ -319,7 +323,9 @@ const Page = () => {
                       {/* 3-dot menu */}
                       <div
                         className="relative"
-                        ref={(ref) => (menuRefs.current[video._id] = ref)}
+                        ref={(ref: HTMLDivElement | null): void => {
+                          menuRefs.current[video._id] = ref;
+                        }}
                       >
                         <button
                           onClick={() => toggleMenu(video._id)}
@@ -388,9 +394,9 @@ const Page = () => {
 
                         <div
                           className="relative"
-                          ref={(ref) =>
-                            (menuPlaylistRefs.current[playlist._id] = ref)
-                          }
+                          ref={(ref: HTMLDivElement | null): void => {
+                            menuPlaylistRefs.current[playlist._id] = ref;
+                          }}
                         >
                           <button
                             onClick={() => toggleMenuPlaylist(playlist._id)}

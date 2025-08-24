@@ -39,11 +39,21 @@ export async function POST(request: NextRequest) {
         user
     });
 
-  } catch (error:any) {
+  } catch (error: unknown) {
+  if (error instanceof Error) {
     console.log(error);
     return NextResponse.json(
-        { error: error.message || "Something went wrong" },
-        { status: 500 }
+      { error: error.message || "Something went wrong" },
+      { status: 500 }
     );
   }
+
+  // Fallback for non-Error types (e.g., strings, numbers)
+  console.log(error);
+  return NextResponse.json(
+    { error: "Something went wrong" },
+    { status: 500 }
+  );
+}
+
 }

@@ -2,7 +2,7 @@ import { connectToDatabase } from "@/utils/mongodb";
 import { NextRequest, NextResponse } from "next/server";
 import { getUserFromRequest } from "@/utils/auth";
 
-export async function GET(request:NextRequest) {
+export async function GET() {
     try {
         await connectToDatabase();
 
@@ -25,11 +25,20 @@ export async function GET(request:NextRequest) {
         }
         return NextResponse.json({ success: true, user }, { status: 200 });
 
-    } catch (error:any) {
-        console.log("getCurrentUser Error:", error.message);
-        return NextResponse.json(
-        { error: error.message || "Something went wrong" },
-        { status: 500 }
-    );
-    }
+    } catch (error: unknown) {
+  let errorMessage = "Something went wrong";
+
+  if (error instanceof Error) {
+    console.log("getCurrentUser Error:", error.message);
+    errorMessage = error.message;
+  } else {
+    console.log("getCurrentUser Error (unexpected type):", error);
+  }
+
+  return NextResponse.json(
+    { error: errorMessage },
+    { status: 500 }
+  );
+}
+
 }

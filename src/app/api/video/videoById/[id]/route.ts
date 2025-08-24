@@ -55,12 +55,13 @@ export async function GET(
       },
       { status: 200 }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.log(error);
-    return NextResponse.json(
-      { error: error.message || "Something went wrong" },
-      { status: 500 }
-    );
+
+    const errorMessage =
+      error instanceof Error ? error.message : "Something went wrong";
+
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
 
@@ -115,25 +116,34 @@ export async function POST(
   const { id } = await params;
   const videoId = id;
   try {
-    if(!videoId.trim()){
+    if (!videoId.trim()) {
       throw new Error("VideoId not provided");
     }
-    const video = await Video.findById(videoId)
-    if(!video){
+    const video = await Video.findById(videoId);
+    if (!video) {
       throw new Error("Video not found");
     }
 
-    if(video.isPublished){
-      video.isPublished=false;
-    }else{
-      video.isPublished=true;
+    if (video.isPublished) {
+      video.isPublished = false;
+    } else {
+      video.isPublished = true;
     }
 
     const updatedVideo = await video.save();
-    return NextResponse.json({success:true,message:"Video publish status toggled successfully",updatedVideo},{status:200})
-
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Video publish status toggled successfully",
+        updatedVideo,
+      },
+      { status: 200 }
+    );
   } catch (error) {
-    console.log(error)
-    return NextResponse.json({success:false,message:"Something went wrong"},{status:500})
+    console.log(error);
+    return NextResponse.json(
+      { success: false, message: "Something went wrong" },
+      { status: 500 }
+    );
   }
 }

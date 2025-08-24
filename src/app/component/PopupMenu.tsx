@@ -6,7 +6,12 @@ import LogoutButton from "./LogoutButton";
 
 const PopupMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
+   const [mounted, setMounted] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null); // 1. Create ref
+
+    useEffect(() => {
+    setMounted(true); // ✅ Only true after hydration
+  }, []);
 
   // 2. Toggle the menu
   const toggleMenu = () => {
@@ -33,6 +38,8 @@ const PopupMenu = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
+
+    if (!mounted) return null;
 
   return (
     <div className="relative" ref={menuRef}>

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { CldUploadWidget } from "next-cloudinary";
+import { CldUploadWidget, CloudinaryUploadWidgetResults } from "next-cloudinary";
 import { signup } from "@/app/actions/userActions";
 import Link from "next/link";
 
@@ -86,7 +86,7 @@ const Page = () => {
         <label className="mb-1">Avatar</label>
         <CldUploadWidget
           signatureEndpoint="/api/cloudinary"
-          onSuccess={(result: any, { widget }) => {
+          onSuccess={(result:any, { widget }) => {
             setAvatar(result.info.secure_url);
             widget.close();
           }}

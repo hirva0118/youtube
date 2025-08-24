@@ -60,11 +60,18 @@ export const signin = async (data: { email: string; password: string }) => {
       data: responseData.data,
       message: responseData.message || "Login successful.",
     };
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
+    if (error.response && error.response.data?.message) {
+      return {
+        success: false,
+        message: error.response.data.message,
+      };
+    }
+
     return {
       success: false,
-      message: "Something went wrong while Loging up.",
+      message: "Something went wrong while logging in.",
     };
   }
 };
@@ -88,21 +95,24 @@ export const logout = async () => {
       message: responseData.message || "Logout successful.",
     };
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return {
       success: false,
       message: "Something went wrong while logout.",
     };
   }
-}
+};
 
-export const changePassword = async (data:{oldPassword:string,newPassword:string}) => {
+export const changePassword = async (data: {
+  oldPassword: string;
+  newPassword: string;
+}) => {
   try {
-    const response = await axios.post("api/users/changePassword",data,{
+    const response = await axios.post("api/users/changePassword", data, {
       headers: {
         "Content-Type": "application/json",
       },
-    })
+    });
     const responseData = response.data;
 
     if (!responseData.success) {
@@ -124,14 +134,16 @@ export const changePassword = async (data:{oldPassword:string,newPassword:string
       message: "Something went wrong while Loging up.",
     };
   }
-}
+};
 
-export const getCurrentUser = async() => {
+export const getCurrentUser = async () => {
   try {
-    const response = await axios.get("/api/users/getCurrentUser",{withCredentials:true});
-    console.log("response",response)
+    const response = await axios.get("/api/users/getCurrentUser", {
+      withCredentials: true,
+    });
+    console.log("response", response);
     return response.data;
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
+};

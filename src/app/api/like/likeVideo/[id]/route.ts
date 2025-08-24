@@ -49,11 +49,16 @@ export async function POST(
       { success: true, message: "Liked successfully", like },
       { status: 200 }
     );
-  } catch (error: any) {
-    console.log(error);
-    return NextResponse.json(
-      { success: false, message: "Something went wrong" },
-      { status: 500 }
-    );
+  } catch (error: unknown) {
+  if (error instanceof Error) {
+    console.error(error.message);
+  } else {
+    console.error("Unknown error", error);
   }
+
+  return NextResponse.json(
+    { success: false, message: "Something went wrong" },
+    { status: 500 }
+  );
+}
 }

@@ -19,9 +19,14 @@ export const getUserFromRequest = async() => {
 
             return user;
 
-    } catch (error:any) {
-        throw new Error(error.message || "Unauthorized");
-    }
+    } catch (error: unknown) {
+  if (error instanceof Error) {
+    throw new Error(error.message || "Unauthorized");
+  } else {
+    throw new Error("Unauthorized");
+  }
+}
+
 }
 
 export const getUserFromApiRequest = async(request: NextRequest) => {
@@ -46,7 +51,12 @@ export const getUserFromApiRequest = async(request: NextRequest) => {
 
         return user;
 
-    } catch (error: any) {
-        throw new Error(error.message || "Unauthorized");
-    }
+    } catch (error: unknown) {
+  if (error instanceof Error) {
+    throw new Error(error.message || "Unauthorized");
+  } else {
+    throw new Error("Unauthorized");
+  }
+}
+
 }

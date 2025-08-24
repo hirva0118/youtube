@@ -1,6 +1,5 @@
 import { Comment } from "@/models/comment.model";
 import { Like } from "@/models/like.model";
-import User from "@/models/user.model";
 import { getUserFromRequest } from "@/utils/auth";
 import { connectToDatabase } from "@/utils/mongodb";
 import { NextRequest, NextResponse } from "next/server";

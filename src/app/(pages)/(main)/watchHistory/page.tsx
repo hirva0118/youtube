@@ -70,7 +70,7 @@ const Page = () => {
 
   return (
     <div className="bg-black">
-      <h1 className="text-center pt-3 text-2xl font-semibold mb-3 mt-8 text-white">
+      <h1 className="text-center pt-8 text-2xl font-semibold mb-3  text-white">
         Watch History
       </h1>
       <ul className="grid grid-cols-1  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-3 gap-4 pt-5">

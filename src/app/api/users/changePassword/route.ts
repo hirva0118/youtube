@@ -43,11 +43,20 @@ try {
         success: true,
         message: "Your current password has been changed successfully.",
     });
-} catch (error: any) {
-    console.log(error);
-    return NextResponse.json(
-        { error: error.message || "Something went wrong" },
-        { status: 500 }
-    );
+} catch (error: unknown) {
+  let errorMessage = "Something went wrong";
+
+  if (error instanceof Error) {
+    errorMessage = error.message;
+    console.log(error.stack); // Optional: log stack for debugging
+  } else {
+    console.log("Unexpected error:", error);
+  }
+
+  return NextResponse.json(
+    { error: errorMessage },
+    { status: 500 }
+  );
 }
+
 }

@@ -105,11 +105,20 @@ export async function GET(
 
       { status: 200 }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
+  if (error instanceof Error) {
     console.log(error);
     return NextResponse.json(
       { error: error.message || "Something went wrong" },
       { status: 500 }
     );
+  } else {
+    console.log("Unknown error:", error);
+    return NextResponse.json(
+      { error: "Something went wrong" },
+      { status: 500 }
+    );
   }
+}
+
 }

@@ -1,35 +1,38 @@
-"use client"
+"use client";
 
-import { createPlaylist } from '@/app/actions/playlistAction';
-import React, { useState } from 'react'
-import { toast } from 'react-toastify';
+import { createPlaylist } from "@/app/actions/playlistAction";
+import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 const Page = () => {
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
 
-    const [name, setName] = useState("");
-    const [description, setDescription] = useState("");
-    const [loading, setLoading] = useState(false)
-
-    const CreatePlaylist = async() =>{
-        const payload = {
-            name,description
-        }
-        setLoading(true)
-        try {
-            const resp = await createPlaylist(payload);
-            if(resp.success){
-                setName("");
-                setDescription("");
-                toast.success("Playlist Created")
-                window.location.href="/postvideo";
-            }
-        } catch (error:any) {
-            toast.error(error)
-        }finally{
-            setLoading(false)
-        }
-
+  const CreatePlaylist = async () => {
+    const payload = {
+      name,
+      description,
+    };
+    setLoading(true);
+    try {
+      const resp = await createPlaylist(payload);
+      if (resp.success) {
+        setName("");
+        setDescription("");
+        toast.success("Playlist Created");
+        window.location.href = "/postvideo";
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unknown error occurred.");
+      }
+    } finally {
+      setLoading(false);
     }
+  };
 
   return (
     <div className="bg-black min-h-screen h-full m-auto pt-20">
@@ -67,6 +70,6 @@ const Page = () => {
       </div>
     </div>
   );
-}
+};
 
-export default Page
+export default Page;

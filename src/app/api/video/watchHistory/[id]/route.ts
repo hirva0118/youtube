@@ -46,13 +46,18 @@ export async function POST(
       },
       { status: 200 }
     );
-  } catch (error: any) {
-    console.log(error);
-    return NextResponse.json(
-      { success: false, message: "Something went wrong" },
-      { status: 500 }
-    );
-  }
+  } catch (error: unknown) {
+  console.error(error);
+
+  return NextResponse.json(
+    {
+      success: false,
+      message: error instanceof Error ? error.message : "Something went wrong",
+    },
+    { status: 500 }
+  );
+}
+
 }
 
 export async function DELETE(
