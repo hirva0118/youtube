@@ -9,7 +9,7 @@ export const signup = async (data: {
   coverImage: string;
 }) => {
   try {
-    const response = await axios.post("api/users/signup", data, {
+    const response = await axios.post("/api/users/signup", data, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -40,7 +40,7 @@ export const signup = async (data: {
 
 export const signin = async (data: { email: string; password: string }) => {
   try {
-    const response = await axios.post("api/users/signin", data, {
+    const response = await axios.post("/api/users/signin", data, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -108,7 +108,7 @@ export const changePassword = async (data: {
   newPassword: string;
 }) => {
   try {
-    const response = await axios.post("api/users/changePassword", data, {
+    const response = await axios.post("/api/users/changePassword", data, {
       headers: {
         "Content-Type": "application/json",
       },

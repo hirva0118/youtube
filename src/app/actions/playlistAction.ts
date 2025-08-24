@@ -5,7 +5,7 @@ export const createPlaylist = async (data: {
   description: string;
 }) => {
   try {
-    const response = await axios.post("api/playlist", data);
+    const response = await axios.post("/api/playlist", data);
     return response.data;
   } catch (error) {
     console.log(error);

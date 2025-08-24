@@ -110,7 +110,7 @@ export const addToWatchHistory = async(id:string) => {
 
 export const getFromWatchHistory = async() =>{
   try {
-    const response = await axios.get("api/users/getWatchHistory")
+    const response = await axios.get("/api/users/getWatchHistory")
     return response.data;
   } catch (error) {
     console.log(error)
