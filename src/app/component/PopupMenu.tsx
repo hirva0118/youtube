@@ -6,10 +6,10 @@ import LogoutButton from "./LogoutButton";
 
 const PopupMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+   const [mounted, setMounted] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null); // 1. Create ref
 
-  useEffect(() => {
+    useEffect(() => {
     setMounted(true); // ✅ Only true after hydration
   }, []);
 
@@ -39,7 +39,7 @@ const PopupMenu = () => {
     };
   }, [isOpen]);
 
-  if (!mounted) return null;
+    if (!mounted) return null;
 
   return (
     <div className="relative" ref={menuRef}>
@@ -55,13 +55,12 @@ const PopupMenu = () => {
         <div className="absolute top-12 mt-2 right-5 bg-gray-800 text-white shadow-md rounded-sm w-32 p-3">
           <ul className="space-y-2">
             <li className="hover:bg-slate-600">
-              <Link href="/home">
-                <a
-                  onClick={() => setIsOpen(false)}
-                  className="p-2 cursor-pointer"
-                >
-                  Home
-                </a>
+              <Link
+                className="p-2 cursor-pointer"
+                href="/home"
+                onClick={()=>setIsOpen(false)}
+              >
+                Home
               </Link>
             </li>
             <li className="hover:bg-slate-600">
