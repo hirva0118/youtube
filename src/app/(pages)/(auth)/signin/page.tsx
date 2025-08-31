@@ -3,7 +3,8 @@
 import { signin } from "@/app/actions/userActions";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import Link from "next/link";
-import React, { useState } from "react";
+import { useRouter } from "next/navigation"; 
+import React, {useState } from "react";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 
@@ -14,6 +15,7 @@ const loginSchema = Yup.object({
 
 const Page = () => {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleLogin = async (values: { email: string; password: string }) => {
     try {
@@ -21,7 +23,7 @@ const Page = () => {
       const result = await signin(values);
       if (result.success) {
         toast.success("Logged in successfully");
-        window.location.href = "/home";
+        router.push("/home")
       } else {
         toast.error(result?.message || "Invalid credentials");
       }

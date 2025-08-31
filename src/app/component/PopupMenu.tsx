@@ -54,7 +54,15 @@ const PopupMenu = () => {
       {isOpen && (
         <div className="absolute top-12 mt-2 right-5 bg-gray-800 text-white shadow-md rounded-sm w-32 p-3">
           <ul className="space-y-2">
-
+              <li className="hover:bg-slate-600">
+              <Link
+                className="p-2 cursor-pointer"
+                href="/home"
+                onClick={handleNavigation}
+              >
+                Home
+              </Link>
+            </li>
             <li className="hover:bg-slate-600">
               <Link
                 className="p-2 cursor-pointer"
