@@ -5,7 +5,7 @@ export function middleware(request: NextRequest) {
 
   const isPublicPath = path === "/signin" || path === "/signup";
   const isPrivatePath =
-    path === "/" ||
+    path === "/home" ||
     path === "/myProfile" ||
     path === "/postvideo" ||
     path.startsWith("/watchVideo");
