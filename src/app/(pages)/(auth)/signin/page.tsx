@@ -3,8 +3,8 @@
 import { signin } from "@/app/actions/userActions";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import Link from "next/link";
-import { useRouter } from "next/navigation"; 
-import React, {useState } from "react";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 
@@ -23,7 +23,7 @@ const Page = () => {
       const result = await signin(values);
       if (result.success) {
         toast.success("Logged in successfully");
-        router.push("/home")
+        router.push("/home");
       } else {
         toast.error(result?.message || "Invalid credentials");
       }
@@ -39,24 +39,31 @@ const Page = () => {
   };
 
   return (
-    <div className="bg-black min-h-screen h-full m-auto mt-20">
-      <div className=" text-white  max-w-md mx-auto p-4 border rounded shadow">
-        <div className="flex justify-center items-center gap-4 mb-4">
-          <h1 className="text-2xl text-center">Login</h1>
-        </div>
+    <div className="flex min-h-screen items-center justify-center bg-black px-4">
+      <div className="w-full max-w-md bg-zinc-900 rounded-2xl shadow-lg p-8 border border-zinc-800">
+        {/* Title */}
+        <h1 className="text-3xl font-bold text-center text-white mb-2">
+          Welcome Back 👋
+        </h1>
+        <p className="text-center text-gray-400 mb-6 text-sm">
+          Please login to continue
+        </p>
+
+        {/* Form */}
         <Formik
           initialValues={{ email: "", password: "" }}
           validationSchema={loginSchema}
           onSubmit={handleLogin}
         >
           {() => (
-            <Form>
-              <div className="mb-4">
+            <Form className="space-y-5">
+              {/* Email */}
+              <div>
                 <Field
                   type="email"
                   name="email"
                   placeholder="Email"
-                  className="border w-full p-2"
+                  className="w-full p-3 rounded-xl bg-zinc-800 text-white border border-zinc-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
                 />
                 <ErrorMessage
                   name="email"
@@ -65,12 +72,13 @@ const Page = () => {
                 />
               </div>
 
-              <div className="mb-4">
+              {/* Password */}
+              <div>
                 <Field
                   type="password"
                   name="password"
                   placeholder="Password"
-                  className="border w-full p-2"
+                  className="w-full p-3 rounded-xl bg-zinc-800 text-white border border-zinc-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
                 />
                 <ErrorMessage
                   name="password"
@@ -79,15 +87,16 @@ const Page = () => {
                 />
               </div>
 
+              {/* Submit button */}
               <button
                 type="submit"
-                className="bg-blue-500 text-white w-full py-2 rounded cursor-pointer relative"
+                className="relative w-full bg-indigo-600 text-white py-3 rounded-xl font-medium hover:bg-indigo-700 transition disabled:opacity-70 cursor-pointer"
                 disabled={loading}
               >
                 {loading && (
-                  <div className="absolute right-3 sm:right-40 top-1/2 transform -translate-y-1/2">
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  </div>
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  </span>
                 )}
                 Login
               </button>
@@ -95,9 +104,20 @@ const Page = () => {
           )}
         </Formik>
 
-        <div className="flex justify-between  mt-4 cursor-pointer text-blue-300 text-sm">
-          <Link href="/signup">Create an account</Link>
-          <Link href="/changePassword">Change password</Link>
+        {/* Links */}
+        <div className="flex justify-between mt-6 text-sm">
+          <Link
+            href="/signup"
+            className="text-indigo-400 hover:underline font-medium"
+          >
+            Create an account
+          </Link>
+          <Link
+            href="/changePassword"
+            className="text-indigo-400 hover:underline font-medium"
+          >
+            Change password
+          </Link>
         </div>
       </div>
     </div>

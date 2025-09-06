@@ -1,7 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { CldUploadWidget, CloudinaryUploadWidgetResults } from "next-cloudinary";
+import {
+  CldUploadWidget,
+  CloudinaryUploadWidgetResults,
+} from "next-cloudinary";
 import { signup } from "@/app/actions/userActions";
 import Link from "next/link";
 
@@ -15,8 +18,8 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
 
   const handleSignup = async () => {
-    setLoading(true)
-    
+    setLoading(true);
+
     const payload = {
       username,
       fullName,
@@ -37,56 +40,66 @@ const Page = () => {
       setEmail("");
       setAvatar("");
       setCoverImage("");
-      setLoading(false)
+      setLoading(false);
       window.location.href = "/signin";
     } else {
       alert(result.message);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="bg-black min-h-screen h-full">
-      <div className="text-white mt-20 max-w-md mx-auto p-4 border rounded shadow mb-10">
-        <div className="flex justify-center items-center gap-4 mb-4">
-          <h1 className="text-2xl text-center">Signup</h1>
-        </div>
+    <div className="bg-black min-h-screen px-4 py-10">
+      <div className="w-full max-w-md mx-auto bg-zinc-900 rounded-2xl shadow-lg p-8 border border-zinc-800 h-full">
+        {/* Title */}
+        <h1 className="text-3xl font-bold text-center text-white mb-2">
+          Create Account ✨
+        </h1>
+        <p className="text-center text-gray-400 mb-6 text-sm">
+          Sign up to get started
+        </p>
 
+        {/* Username */}
         <input
           type="text"
           placeholder="Username"
           value={username}
-          className="border w-full p-2 mb-4"
+          className="w-full p-3 mb-4 rounded-xl bg-zinc-800 text-white border border-zinc-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
           onChange={(e) => setUsername(e.target.value)}
         />
 
+        {/* Full Name */}
         <input
           type="text"
           placeholder="Full Name"
           value={fullName}
-          className="border w-full p-2 mb-4"
+          className="w-full p-3 mb-4 rounded-xl bg-zinc-800 text-white border border-zinc-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
           onChange={(e) => setFullName(e.target.value)}
         />
 
+        {/* Email */}
         <input
           type="email"
           placeholder="Email"
           value={email}
-          className="border w-full p-2 mb-4"
+          className="w-full p-3 mb-4 rounded-xl bg-zinc-800 text-white border border-zinc-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
           onChange={(e) => setEmail(e.target.value)}
         />
 
+        {/* Password */}
         <input
           type="password"
           placeholder="Password"
           value={password}
-          className="border w-full p-2 mb-4"
+          className="w-full p-3 mb-4 rounded-xl bg-zinc-800 text-white border border-zinc-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <label className="mb-1">Avatar</label>
+        {/* Avatar Upload */}
+        <label className="text-gray-300 text-sm mb-2 block">Avatar</label>
         <CldUploadWidget
           signatureEndpoint="/api/cloudinary"
-          onSuccess={(result:any, { widget }) => {
+          onSuccess={(result: any, { widget }) => {
             setAvatar(result.info.secure_url);
             widget.close();
           }}
@@ -94,13 +107,12 @@ const Page = () => {
             cropping: true,
             croppingAspectRatio: 1,
             maxFileSize: 5000000,
-            maxImageFileSize: 5000000,
             clientAllowedFormats: ["jpg", "jpeg", "png"],
           }}
         >
           {({ open }) => (
             <button
-              className="border p-2 mb-4 w-full text-left"
+              className="w-full p-3 mb-4 rounded-xl bg-zinc-800 text-gray-300 border border-zinc-700 hover:bg-zinc-700 transition"
               type="button"
               onClick={() => open()}
             >
@@ -108,16 +120,16 @@ const Page = () => {
             </button>
           )}
         </CldUploadWidget>
-
         {avatar && (
           <img
             src={avatar}
             alt="Avatar Preview"
-            className="w-24 h-24 object-cover mb-4"
+            className="w-24 h-24 object-cover rounded-full mb-4 border border-zinc-700"
           />
         )}
 
-        <label className="mb-1">Cover Image</label>
+        {/* Cover Image Upload */}
+        <label className="text-gray-300 text-sm mb-2 block">Cover Image</label>
         <CldUploadWidget
           signatureEndpoint="/api/cloudinary"
           onSuccess={(result: any, { widget }) => {
@@ -132,7 +144,7 @@ const Page = () => {
         >
           {({ open }) => (
             <button
-              className="border p-2 mb-4 w-full text-left"
+              className="w-full p-3 mb-4 rounded-xl bg-zinc-800 text-gray-300 border border-zinc-700 hover:bg-zinc-700 transition"
               type="button"
               onClick={() => open()}
             >
@@ -140,28 +152,36 @@ const Page = () => {
             </button>
           )}
         </CldUploadWidget>
-
         {coverImage && (
           <img
             src={coverImage}
             alt="Cover Preview"
-            className="w-full h-32 object-cover mb-4"
+            className="w-full h-32 object-cover mb-4 rounded-lg border border-zinc-700"
           />
         )}
 
+        {/* Submit Button */}
         <button
           onClick={handleSignup}
-          className="bg-blue-500 text-white w-full py-2 rounded cursor-pointer relative"
+          disabled={loading}
+          className="relative w-full bg-indigo-600 text-white py-3 rounded-xl font-medium hover:bg-indigo-700 transition disabled:opacity-70"
         >
           {loading && (
-            <div className="absolute right-3 sm:right-36 top-1/2 transform -translate-y-1/2">
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-            </div>
+            <span className="absolute right-4 top-1/2 -translate-y-1/2">
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            </span>
           )}
           Register
         </button>
-        <div className="flex justify-end mt-4 cursor-pointer text-blue-300 text-sm ">
-          <Link href="/signin">Already have an account?</Link>
+
+        {/* Already have account */}
+        <div className="mt-6 text-center text-sm">
+          <Link
+            href="/signin"
+            className="text-indigo-400 hover:underline font-medium"
+          >
+            Already have an account? Sign in
+          </Link>
         </div>
       </div>
     </div>

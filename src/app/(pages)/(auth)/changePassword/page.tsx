@@ -19,11 +19,11 @@ const Page = () => {
     try {
       const result = await changePassword(payload);
       if (result.success) {
-        toast.success("Passowrd changed successfully");
+        toast.success("Password changed successfully");
         setOldPassword("");
         setNewPassword("");
       } else {
-        toast.error("Something went wrong");
+        toast.error(result?.message || "Something went wrong");
       }
     } catch (error) {
       toast.error("Failed");
@@ -34,40 +34,45 @@ const Page = () => {
   };
 
   return (
-    <div className="bg-black min-h-screen h-full m-auto mt-20">
-      <div className=" text-white max-w-md mx-auto p-4 border rounded shadow ">
-        <div className="flex justify-center items-center gap-4 mb-4">
-          <h1 className="text-2xl text-center">Change password</h1>
-        </div>
+    <div className="bg-black min-h-screen px-4 py-10">
+      <div className="w-full max-w-md mx-auto bg-zinc-900 rounded-2xl shadow-lg p-8 border border-zinc-800">
+        <h1 className="text-2xl font-semibold text-center text-white mb-6">
+          Change Password
+        </h1>
+
         <input
-          type="text"
+          type="password"
           placeholder="Old Password"
           value={oldPassword}
-          className="border w-full p-2 mb-4"
+          className="w-full mb-4 px-3 py-2 rounded-lg bg-zinc-800 text-white placeholder-gray-400 border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           onChange={(e) => setOldPassword(e.target.value)}
         />
 
         <input
-          type="text"
+          type="password"
           placeholder="New Password"
           value={newPassword}
-          className="border w-full p-2 mb-4"
+          className="w-full mb-4 px-3 py-2 rounded-lg bg-zinc-800 text-white placeholder-gray-400 border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           onChange={(e) => setNewPassword(e.target.value)}
         />
 
         <button
           onClick={handleChangePassword}
-          className="bg-blue-500 text-white w-full py-2 rounded cursor-pointer relative"
+          className="relative w-full py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-medium transition"
+          disabled={loading}
         >
           {loading && (
-            <div className="absolute right-3 sm:right-28 top-1/2 transform -translate-y-1/2">
+            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
             </div>
           )}
           Change Password
         </button>
-        <div className="flex justify-end  mt-4 cursor-pointer text-blue-300 text-sm">
-          <Link href="/signin">Back to Login</Link>
+
+        <div className="flex justify-end mt-4 text-blue-400 text-sm">
+          <Link href="/signin" className="hover:underline">
+            Back to Login
+          </Link>
         </div>
       </div>
     </div>
